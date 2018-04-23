@@ -1,7 +1,6 @@
 package ml.echelon133.Model;
 
 import ml.echelon133.Security.SecretGenerator;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -26,7 +25,7 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name="user_fk", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name="authority_fk", referencedColumnName = "id")
     )
-    private Set<GrantedAuthority> authorities;
+    private Set<Authority> authorities;
 
     @OneToMany(mappedBy="listOwner", cascade = CascadeType.PERSIST)
     private List<TodoList> todoLists;
@@ -78,15 +77,15 @@ public class User implements UserDetails {
         this.secret = secret;
     }
 
-    public Set<GrantedAuthority> getAuthorities() {
+    public Set<Authority> getAuthorities() {
         return authorities;
     }
 
-    public void setAuthorities(Set<GrantedAuthority> authorities) {
+    public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
     }
 
-    public void addAuthority(GrantedAuthority authority) {
+    public void addAuthority(Authority authority) {
         this.authorities.add(authority);
     }
 
