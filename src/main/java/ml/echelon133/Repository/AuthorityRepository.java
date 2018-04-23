@@ -4,5 +4,5 @@ import ml.echelon133.Model.Authority;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AuthorityRepository extends JpaRepository<Authority, Long> {
-    Authority getAuthorityByAuthorityName(String authorityName);
+    Authority getAuthorityByAuthority(String authority);
 }
