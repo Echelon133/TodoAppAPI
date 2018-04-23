@@ -10,7 +10,7 @@ public class AuthorityService implements IAuthorityService {
     private AuthorityRepository authorityRepository;
 
     @Override
-    public Authority getAuthorityByAuthorityName(String authorityName) {
-        return authorityRepository.getAuthorityByAuthorityName(authorityName);
+    public Authority getAuthorityByAuthority(String authorityName) {
+        return authorityRepository.getAuthorityByAuthority(authorityName);
     }
 }
