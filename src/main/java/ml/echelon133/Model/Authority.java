@@ -1,5 +1,7 @@
 package ml.echelon133.Model;
 
+import org.springframework.security.core.GrantedAuthority;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,18 +9,18 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
-public class Authority {
+public class Authority implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotEmpty
-    private String authorityName;
+    private String authority;
 
     public Authority() {}
     public Authority(String authorityName) {
-        setAuthorityName(authorityName);
+        setAuthority(authorityName);
     }
 
     public Long getId() {
@@ -29,11 +31,12 @@ public class Authority {
         this.id = id;
     }
 
-    public String getAuthorityName() {
-        return authorityName;
+    @Override
+    public String getAuthority() {
+        return this.authority;
     }
 
-    public void setAuthorityName(String authorityName) {
-        this.authorityName = authorityName;
+    public void setAuthority(String authority) {
+        this.authority = authority;
     }
 }

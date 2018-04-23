@@ -1,6 +1,8 @@
 package ml.echelon133.Model;
 
 import ml.echelon133.Security.SecretGenerator;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +26,7 @@ public class User {
             joinColumns = @JoinColumn(name="user_fk", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name="authority_fk", referencedColumnName = "id")
     )
-    private Set<Authority> authorities;
+    private Set<GrantedAuthority> authorities;
 
     @OneToMany(mappedBy="listOwner", cascade = CascadeType.PERSIST)
     private List<TodoList> todoLists;
@@ -76,15 +78,15 @@ public class User {
         this.secret = secret;
     }
 
-    public Set<Authority> getAuthorities() {
+    public Set<GrantedAuthority> getAuthorities() {
         return authorities;
     }
 
-    public void setAuthorities(Set<Authority> authorities) {
+    public void setAuthorities(Set<GrantedAuthority> authorities) {
         this.authorities = authorities;
     }
 
-    public void addAuthority(Authority authority) {
+    public void addAuthority(GrantedAuthority authority) {
         this.authorities.add(authority);
     }
 
@@ -97,5 +99,25 @@ public class User {
             list.setListOwner(this);
         }
         this.todoLists = todoLists;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
