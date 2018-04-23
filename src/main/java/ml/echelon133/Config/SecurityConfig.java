@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+@Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
@@ -53,16 +54,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Bean
         public RequestMatcher basicRequestMatcher() {
-            return new AntPathRequestMatcher("/users/token");
+            return new AntPathRequestMatcher("/users/**");
         }
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable().anonymous().disable();
+            http.csrf().disable();
             http
                     .requestMatcher(basicRequestMatcher())
+                    .antMatcher("/users/register")
+                    .anonymous()
+                    .and()
                     .authorizeRequests()
-                    .antMatchers(basicRequestMatcher().toString())
+                    .antMatchers("/users/token")
                     .authenticated()
                     .and()
                     .httpBasic()
