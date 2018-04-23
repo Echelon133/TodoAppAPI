@@ -4,22 +4,19 @@ import ml.echelon133.Model.Validator.PasswordsMatch;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @PasswordsMatch
 public class NewUserDTO {
-
 
     @NotEmpty
     @Length(min=6, max=25)
     private String username;
 
     @NotEmpty
-    @NotNull
     @Length(min=6)
     private String password;
 
-    @NotNull
+    @NotEmpty
     private String passwordConfirm;
 
     public NewUserDTO() {}
