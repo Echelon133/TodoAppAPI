@@ -46,4 +46,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         }
     }
+
+    @Order(2)
+    @Configuration
+    public static class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
+
+        @Bean
+        public RequestMatcher basicRequestMatcher() {
+            return new AntPathRequestMatcher("/users/token");
+        }
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.csrf().disable().anonymous().disable();
+            http
+                    .requestMatcher(basicRequestMatcher())
+                    .authorizeRequests()
+                    .antMatchers(basicRequestMatcher().toString())
+                    .authenticated()
+                    .and()
+                    .httpBasic()
+                    .and()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        }
+    }
 }
