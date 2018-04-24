@@ -15,6 +15,7 @@ import java.io.IOException;
 public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private final String AUTH_HEADER_NAME = "Authorization";
+    private boolean continueChainBeforeSuccessfulAuthentication = false;
 
     public JWTAuthenticationFilter() {
         super(new AntPathRequestMatcher("/"));
@@ -40,6 +41,11 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
             requires = false;
         }
         return requires;
+    }
+
+    @Override
+    public void setContinueChainBeforeSuccessfulAuthentication(boolean continueChainBeforeSuccessfulAuthentication) {
+        this.continueChainBeforeSuccessfulAuthentication = continueChainBeforeSuccessfulAuthentication;
     }
 
     @Override
