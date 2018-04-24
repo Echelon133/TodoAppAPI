@@ -27,7 +27,7 @@ public class User implements UserDetails {
     )
     private Set<Authority> authorities;
 
-    @OneToMany(mappedBy="listOwner", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="listOwner", cascade = CascadeType.ALL)
     private List<TodoList> todoLists;
 
     public User() {
