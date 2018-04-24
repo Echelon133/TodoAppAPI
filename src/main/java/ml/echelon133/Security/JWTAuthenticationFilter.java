@@ -2,6 +2,7 @@ package ml.echelon133.Security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -13,25 +14,35 @@ import java.io.IOException;
 
 public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    private boolean continueChainBeforeSuccessfulAuthentication = false;
-
     public JWTAuthenticationFilter() {
         super(new AntPathRequestMatcher("/"));
     }
 
     @Override
     protected boolean requiresAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        return super.requiresAuthentication(request, response);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Boolean requires = false;
+
+        if (auth == null || !auth.isAuthenticated()) {
+            String header = request.getHeader("Authorization");
+            try {
+                Boolean requestMatches = super.requiresAuthentication(request, response);
+                Boolean headerCorrect = header.startsWith("Bearer");
+                if (headerCorrect && requestMatches) {
+                    requires = true;
+                }
+            } catch (NullPointerException ex) {
+                requires = false;
+            }
+        } else {
+            requires = false;
+        }
+        return requires;
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         super.successfulAuthentication(request, response, chain, authResult);
-    }
-
-    @Override
-    public void setContinueChainBeforeSuccessfulAuthentication(boolean continueChainBeforeSuccessfulAuthentication) {
-        super.setContinueChainBeforeSuccessfulAuthentication(continueChainBeforeSuccessfulAuthentication);
     }
 
     @Override
