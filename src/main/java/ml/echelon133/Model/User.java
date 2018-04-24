@@ -100,6 +100,11 @@ public class User implements UserDetails {
         this.todoLists = todoLists;
     }
 
+    public void addTodoList(TodoList todoList) {
+        todoList.setListOwner(this);
+        this.todoLists.add(todoList);
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
