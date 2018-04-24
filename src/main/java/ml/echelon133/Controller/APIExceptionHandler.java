@@ -1,6 +1,7 @@
 package ml.echelon133.Controller;
 
 import ml.echelon133.Exception.RegistrationFailureException;
+import ml.echelon133.Exception.TodoListFailedValidationException;
 import ml.echelon133.Exception.UsernameAlreadyTakenException;
 import ml.echelon133.Model.DTO.APIMessage;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +32,13 @@ public class APIExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(RegistrationFailureException.class)
     protected ResponseEntity<Object> handleRegistrationFailureException(RegistrationFailureException ex) {
+        APIMessage apiMessage = new APIMessage(HttpStatus.BAD_REQUEST);
+        apiMessage.setMessages(ex.getErrors());
+        return new ResponseEntity<>(apiMessage, apiMessage.getHttpStatus());
+    }
+
+    @ExceptionHandler(TodoListFailedValidationException.class)
+    protected ResponseEntity<Object> handleTodoListFailedValidationException(TodoListFailedValidationException ex) {
         APIMessage apiMessage = new APIMessage(HttpStatus.BAD_REQUEST);
         apiMessage.setMessages(ex.getErrors());
         return new ResponseEntity<>(apiMessage, apiMessage.getHttpStatus());
