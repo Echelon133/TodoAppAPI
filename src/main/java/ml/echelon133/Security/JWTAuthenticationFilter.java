@@ -51,6 +51,9 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         super.successfulAuthentication(request, response, chain, authResult);
+        if (this.continueChainBeforeSuccessfulAuthentication) {
+            chain.doFilter(request, response);
+        }
     }
 
     @Override
