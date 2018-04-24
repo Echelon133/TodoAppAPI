@@ -14,6 +14,8 @@ import java.io.IOException;
 
 public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
+    private final String AUTH_HEADER_NAME = "Authorization";
+
     public JWTAuthenticationFilter() {
         super(new AntPathRequestMatcher("/"));
     }
@@ -24,7 +26,7 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
         Boolean requires = false;
 
         if (auth == null || !auth.isAuthenticated()) {
-            String header = request.getHeader("Authorization");
+            String header = request.getHeader(AUTH_HEADER_NAME);
             try {
                 Boolean requestMatches = super.requiresAuthentication(request, response);
                 Boolean headerCorrect = header.startsWith("Bearer");
@@ -47,7 +49,7 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws AuthenticationException, IOException, ServletException {
-        String token = httpServletRequest.getHeader("Authorization");
+        String token = httpServletRequest.getHeader(AUTH_HEADER_NAME);
         JWTToken auth = new JWTToken(token);
         return getAuthenticationManager().authenticate(auth);
     }
