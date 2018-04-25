@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface ITodoListService {
     List<TodoList> getAllByListOwner_Username(String username);
+    TodoList getByIdAndUsername(Long id, String username);
     TodoList save(TodoList todoList);
 }

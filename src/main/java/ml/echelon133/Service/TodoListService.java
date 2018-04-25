@@ -19,6 +19,11 @@ public class TodoListService implements ITodoListService {
     }
 
     @Override
+    public TodoList getByIdAndUsername(Long id, String username) {
+        return todoListRepository.getByIdAndListOwner_Username(id, username);
+    }
+
+    @Override
     public TodoList save(TodoList todoList) {
         return todoListRepository.save(todoList);
     }
