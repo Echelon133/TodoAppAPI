@@ -2,7 +2,7 @@ package ml.echelon133.Model.DTO;
 
 import org.hibernate.validator.constraints.Length;
 
-public class NewListDTO {
+public class TodoListDTO {
 
     @Length(min=4, max=60)
     private String name;
