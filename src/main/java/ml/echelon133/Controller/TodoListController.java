@@ -1,10 +1,9 @@
 package ml.echelon133.Controller;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import ml.echelon133.Exception.ResourceDoesNotExistException;
 import ml.echelon133.Exception.TodoListFailedValidationException;
 import ml.echelon133.Model.DTO.APIMessage;
-import ml.echelon133.Model.DTO.NewListDTO;
+import ml.echelon133.Model.DTO.TodoListDTO;
 import ml.echelon133.Model.TodoList;
 import ml.echelon133.Model.User;
 import ml.echelon133.Service.ITodoListService;
@@ -38,7 +37,7 @@ public class TodoListController {
 
     @RequestMapping(value="/api/todo-lists", method = RequestMethod.POST)
     public APIMessage addNewList(Principal principal,
-                                 @Valid @RequestBody NewListDTO newListDTO,
+                                 @Valid @RequestBody TodoListDTO todoListDTO,
                                  BindingResult result) throws TodoListFailedValidationException {
         String username = principal.getName();
 
@@ -55,7 +54,7 @@ public class TodoListController {
         User user = userService.getUserByUsername(username);
 
         TodoList todoList = new TodoList();
-        todoList.setName(newListDTO.getName());
+        todoList.setName(todoListDTO.getName());
         user.addTodoList(todoList);
         userService.save(user);
 
@@ -73,5 +72,36 @@ public class TodoListController {
             throw new ResourceDoesNotExistException("List not found");
         }
         return todoList;
+    }
+
+    @RequestMapping(value="/api/todo-lists/{listId}", method = RequestMethod.PUT)
+    public APIMessage changeNameOfTodoList(Principal principal,
+                                         @PathVariable("listId") Long id,
+                                         @Valid @RequestBody TodoListDTO todoListDTO,
+                                         BindingResult result) throws ResourceDoesNotExistException, TodoListFailedValidationException {
+        String username = principal.getName();
+
+        if (result.hasErrors()) {
+            List<FieldError> fieldErrors = result.getFieldErrors();
+            List<String> textErrors = new ArrayList<>();
+
+            for (FieldError fError : fieldErrors) {
+                textErrors.add(fError.getField() + " " + fError.getDefaultMessage());
+            }
+            throw new TodoListFailedValidationException(textErrors);
+        }
+
+        TodoList todoList = todoListService.getByIdAndUsername(id, username);
+
+        if (todoList == null) {
+            throw new ResourceDoesNotExistException("List not found");
+        } else {
+            String newName = todoListDTO.getName();
+            todoList.setName(newName);
+            todoListService.save(todoList);
+        }
+        APIMessage apiMessage = new APIMessage(HttpStatus.OK);
+        apiMessage.addMessage("List name changed successfully");
+        return apiMessage;
     }
 }
