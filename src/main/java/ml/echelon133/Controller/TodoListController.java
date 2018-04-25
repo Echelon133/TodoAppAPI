@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -43,12 +42,7 @@ public class TodoListController {
 
         if (result.hasErrors()) {
             List<FieldError> fieldErrors = result.getFieldErrors();
-            List<String> textErrors = new ArrayList<>();
-
-            for (FieldError fError : fieldErrors) {
-                textErrors.add(fError.getField() + " " + fError.getDefaultMessage());
-            }
-            throw new TodoListFailedValidationException(textErrors);
+            throw new TodoListFailedValidationException(fieldErrors);
         }
 
         User user = userService.getUserByUsername(username);
@@ -83,12 +77,7 @@ public class TodoListController {
 
         if (result.hasErrors()) {
             List<FieldError> fieldErrors = result.getFieldErrors();
-            List<String> textErrors = new ArrayList<>();
-
-            for (FieldError fError : fieldErrors) {
-                textErrors.add(fError.getField() + " " + fError.getDefaultMessage());
-            }
-            throw new TodoListFailedValidationException(textErrors);
+            throw new TodoListFailedValidationException(fieldErrors);
         }
 
         TodoList todoList = todoListService.getByIdAndUsername(id, username);
