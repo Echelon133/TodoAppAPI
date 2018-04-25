@@ -11,20 +11,20 @@ import java.util.concurrent.TimeUnit;
 public class TokenRepository implements ITokenRepository {
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     public void setTokenOfUser(String username, String token, Integer hoursTimeToLive) {
-        BoundValueOperations ops = redisTemplate.boundValueOps(username);
+        BoundValueOperations<String, String> ops = redisTemplate.boundValueOps(username);
         ops.set(token, hoursTimeToLive, TimeUnit.HOURS);
     }
 
     @Override
     public String getTokenOfUser(String username) {
-        BoundValueOperations ops = redisTemplate.boundValueOps(username);
+        BoundValueOperations<String, String> ops = redisTemplate.boundValueOps(username);
         String token;
         try {
-            token = ops.get().toString();
+            token = ops.get();
         } catch (NullPointerException ex) {
             token = "";
         }
