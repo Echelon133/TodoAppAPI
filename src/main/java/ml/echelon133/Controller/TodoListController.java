@@ -1,5 +1,7 @@
 package ml.echelon133.Controller;
 
+import com.sun.xml.internal.bind.v2.TODO;
+import ml.echelon133.Exception.ResourceDoesNotExistException;
 import ml.echelon133.Exception.TodoListFailedValidationException;
 import ml.echelon133.Model.DTO.APIMessage;
 import ml.echelon133.Model.DTO.NewListDTO;
@@ -11,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -63,5 +62,16 @@ public class TodoListController {
         APIMessage apiMessage = new APIMessage(HttpStatus.CREATED);
         apiMessage.addMessage("Successful list creation");
         return apiMessage;
+    }
+
+    @RequestMapping(value="/api/todo-lists/{listId}", method = RequestMethod.GET)
+    public TodoList getSpecificTodoList(Principal principal, @PathVariable("listId") Long id) throws ResourceDoesNotExistException {
+        String username = principal.getName();
+        TodoList todoList = todoListService.getByIdAndUsername(id, username);
+        if (todoList == null) {
+            // list with specified id might exist, but it does not belong to the user
+            throw new ResourceDoesNotExistException("List not found");
+        }
+        return todoList;
     }
 }
