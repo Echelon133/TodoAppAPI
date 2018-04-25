@@ -41,7 +41,7 @@ public class APIExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(TodoListFailedValidationException.class)
     protected ResponseEntity<Object> handleTodoListFailedValidationException(TodoListFailedValidationException ex) {
         APIMessage apiMessage = new APIMessage(HttpStatus.BAD_REQUEST);
-        apiMessage.setMessages(ex.getErrors());
+        apiMessage.setMessages(ex.getTextErrors());
         return new ResponseEntity<>(apiMessage, apiMessage.getHttpStatus());
     }
 
