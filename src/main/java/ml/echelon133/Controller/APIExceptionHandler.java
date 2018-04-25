@@ -1,6 +1,7 @@
 package ml.echelon133.Controller;
 
 import ml.echelon133.Exception.RegistrationFailureException;
+import ml.echelon133.Exception.ResourceDoesNotExistException;
 import ml.echelon133.Exception.TodoListFailedValidationException;
 import ml.echelon133.Exception.UsernameAlreadyTakenException;
 import ml.echelon133.Model.DTO.APIMessage;
@@ -41,6 +42,13 @@ public class APIExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleTodoListFailedValidationException(TodoListFailedValidationException ex) {
         APIMessage apiMessage = new APIMessage(HttpStatus.BAD_REQUEST);
         apiMessage.setMessages(ex.getErrors());
+        return new ResponseEntity<>(apiMessage, apiMessage.getHttpStatus());
+    }
+
+    @ExceptionHandler(ResourceDoesNotExistException.class)
+    protected ResponseEntity<Object> handleResourceDoesNotExistException(ResourceDoesNotExistException ex) {
+        APIMessage apiMessage = new APIMessage(HttpStatus.NOT_FOUND);
+        apiMessage.addMessage(ex.getMessage());
         return new ResponseEntity<>(apiMessage, apiMessage.getHttpStatus());
     }
 }
