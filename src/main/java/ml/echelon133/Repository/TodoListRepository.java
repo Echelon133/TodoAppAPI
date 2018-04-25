@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface TodoListRepository extends JpaRepository<TodoList, Long> {
     List<TodoList> getAllByListOwner_Username(String username);
+    TodoList getByIdAndListOwner_Username(Long id, String username);
 }
