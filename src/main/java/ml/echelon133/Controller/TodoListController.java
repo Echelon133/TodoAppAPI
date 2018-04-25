@@ -6,6 +6,7 @@ import ml.echelon133.Model.DTO.APIMessage;
 import ml.echelon133.Model.DTO.TodoListDTO;
 import ml.echelon133.Model.TodoList;
 import ml.echelon133.Model.User;
+import ml.echelon133.Repository.TodoListRepository;
 import ml.echelon133.Service.ITodoListService;
 import ml.echelon133.Service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class TodoListController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private TodoListRepository todoListRepository;
 
     @RequestMapping(value="/api/todo-lists", method = RequestMethod.GET)
     public List<TodoList> getAllLists(Principal principal) {
@@ -91,6 +95,31 @@ public class TodoListController {
         }
         APIMessage apiMessage = new APIMessage(HttpStatus.OK);
         apiMessage.addMessage("List name changed successfully");
+        return apiMessage;
+    }
+
+    @RequestMapping(value="/api/todo-lists/{listId}", method = RequestMethod.DELETE)
+    public APIMessage deleteTodoList(Principal principal, @PathVariable("listId") Long id) throws ResourceDoesNotExistException {
+        String username = principal.getName();
+        Boolean wasDeleted;
+        APIMessage apiMessage;
+
+        TodoList todoList = todoListService.getByIdAndUsername(id, username);
+        if (todoList == null) {
+            // list does not exist or user does not own it, so deletion shouldn't be possible
+            throw new ResourceDoesNotExistException("List not found");
+        }
+        wasDeleted = todoListService.delete(todoList);
+
+        if (wasDeleted) {
+            apiMessage = new APIMessage(HttpStatus.OK);
+            apiMessage.addMessage("List deleted successfully");
+        } else {
+            // delete is called only if the resource exists and user has rights to delete it
+            // if resource was not deleted, it means that something went wrong and it is not user fault
+            apiMessage = new APIMessage(HttpStatus.INTERNAL_SERVER_ERROR);
+            apiMessage.addMessage("Failed to delete list");
+        }
         return apiMessage;
     }
 }
