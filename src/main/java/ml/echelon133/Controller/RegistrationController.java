@@ -65,8 +65,8 @@ public class RegistrationController {
         Authority authority = authorityService.getAuthorityByAuthority("ROLE_USER");
         if (authority == null) {
             authority = new Authority("ROLE_USER");
-            user.addAuthority(authority);
         }
+        user.addAuthority(authority);
 
         userService.save(user);
         apiMessage = new APIMessage(HttpStatus.CREATED);
