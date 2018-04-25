@@ -8,4 +8,5 @@ public interface ITodoListService {
     List<TodoList> getAllByListOwner_Username(String username);
     TodoList getByIdAndUsername(Long id, String username);
     TodoList save(TodoList todoList);
+    Boolean delete(TodoList todoList);
 }

@@ -27,4 +27,14 @@ public class TodoListService implements ITodoListService {
     public TodoList save(TodoList todoList) {
         return todoListRepository.save(todoList);
     }
+
+    @Override
+    public Boolean delete(TodoList todoList) {
+        Boolean wasDeleted;
+        Long id = todoList.getId();
+
+        todoListRepository.delete(todoList);
+        wasDeleted = !todoListRepository.existsById(id);
+        return wasDeleted;
+    }
 }
