@@ -28,9 +28,6 @@ public class TodoListController {
     @Autowired
     private IUserService userService;
 
-    @Autowired
-    private TodoListRepository todoListRepository;
-
     @RequestMapping(value="/api/todo-lists", method = RequestMethod.GET)
     public List<TodoList> getAllLists(Principal principal) {
         String username = principal.getName();
