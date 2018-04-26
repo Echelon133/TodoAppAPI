@@ -3,7 +3,6 @@ package ml.echelon133.Controller;
 import ml.echelon133.Exception.ObjectFailedValidationException;
 import ml.echelon133.Exception.RegistrationFailureException;
 import ml.echelon133.Exception.ResourceDoesNotExistException;
-import ml.echelon133.Exception.TodoListFailedValidationException;
 import ml.echelon133.Exception.UsernameAlreadyTakenException;
 import ml.echelon133.Model.DTO.APIMessage;
 import org.springframework.http.HttpHeaders;
