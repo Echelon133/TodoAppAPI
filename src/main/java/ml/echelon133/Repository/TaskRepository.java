@@ -16,5 +16,15 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             "          and tl.listOwner=u.id" +
             "          and tl.id=:todoListId" +
             "          and u.username=:username")
-    Set<Task> getAllTasksByTodoListIdAndUsername(@Param("todoListId") Long todoListId, @Param("username") String username);
+    Set<Task> getAllTasksByTodoListIdAndUsername(@Param("todoListId") Long todoListId,
+                                                 @Param("username") String username);
+
+    @Query("Select t from Task t, User u, TodoList tl" +
+            "    where t.taskOwner.id=:listId" +
+            "          and tl.listOwner=u.id" +
+            "          and t.id=:taskId" +
+            "          and u.username=:username")
+    Task getTaskByListIdAndTaskIdAndUsername(@Param("listId") Long listId,
+                                    @Param("taskId") Long taskId,
+                                    @Param("username") String username);
 }
