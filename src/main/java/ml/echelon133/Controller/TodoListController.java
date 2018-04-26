@@ -1,12 +1,11 @@
 package ml.echelon133.Controller;
 
+import ml.echelon133.Exception.ObjectFailedValidationException;
 import ml.echelon133.Exception.ResourceDoesNotExistException;
-import ml.echelon133.Exception.TodoListFailedValidationException;
 import ml.echelon133.Model.DTO.APIMessage;
 import ml.echelon133.Model.DTO.TodoListDTO;
 import ml.echelon133.Model.TodoList;
 import ml.echelon133.Model.User;
-import ml.echelon133.Repository.TodoListRepository;
 import ml.echelon133.Service.ITodoListService;
 import ml.echelon133.Service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +37,12 @@ public class TodoListController {
     @RequestMapping(value="/api/todo-lists", method = RequestMethod.POST)
     public APIMessage addNewList(Principal principal,
                                  @Valid @RequestBody TodoListDTO todoListDTO,
-                                 BindingResult result) throws TodoListFailedValidationException {
+                                 BindingResult result) throws ObjectFailedValidationException {
         String username = principal.getName();
 
         if (result.hasErrors()) {
             List<FieldError> fieldErrors = result.getFieldErrors();
-            throw new TodoListFailedValidationException(fieldErrors);
+            throw new ObjectFailedValidationException(fieldErrors);
         }
 
         User user = userService.getUserByUsername(username);
@@ -73,12 +72,12 @@ public class TodoListController {
     public APIMessage changeNameOfTodoList(Principal principal,
                                          @PathVariable("listId") Long id,
                                          @Valid @RequestBody TodoListDTO todoListDTO,
-                                         BindingResult result) throws ResourceDoesNotExistException, TodoListFailedValidationException {
+                                         BindingResult result) throws ResourceDoesNotExistException, ObjectFailedValidationException {
         String username = principal.getName();
 
         if (result.hasErrors()) {
             List<FieldError> fieldErrors = result.getFieldErrors();
-            throw new TodoListFailedValidationException(fieldErrors);
+            throw new ObjectFailedValidationException(fieldErrors);
         }
 
         TodoList todoList = todoListService.getByIdAndUsername(id, username);
