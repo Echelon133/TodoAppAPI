@@ -19,6 +19,11 @@ public class TaskService implements ITaskService {
     }
 
     @Override
+    public Task getTaskByListIdAndTaskIdAndUsername(Long listId, Long taskId, String username) {
+        return taskRepository.getTaskByListIdAndTaskIdAndUsername(listId, taskId, username);
+    }
+
+    @Override
     public Task save(Task task) {
         return taskRepository.save(task);
     }
