@@ -20,7 +20,7 @@ public class TokenController {
 
         String token = tokenService.getTokenOfUser(username);
 
-        if (token.equals("")) {
+        if (token == null) {
             // create a new token and push it to redis
             token = tokenService.generateTokenForUser(username);
             tokenService.setTokenOfUser(username, token, 5);
