@@ -1,15 +1,22 @@
 package ml.echelon133.Controller;
 
+import ml.echelon133.Exception.ObjectFailedValidationException;
+import ml.echelon133.Exception.ResourceDoesNotExistException;
+import ml.echelon133.Model.DTO.APIMessage;
+import ml.echelon133.Model.DTO.TaskDTO;
 import ml.echelon133.Model.Task;
+import ml.echelon133.Model.TodoList;
 import ml.echelon133.Service.ITaskService;
 import ml.echelon133.Service.ITodoListService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -26,5 +33,36 @@ public class TaskController {
         String username = principal.getName();
         Set<Task> tasks = taskService.getAllTasksByTodoListIdAndUsername(listId, username);
         return tasks;
+    }
+
+    @RequestMapping(value = "/api/todo-lists/{listId}/tasks", method = RequestMethod.POST)
+    public APIMessage addTaskToList(Principal principal,
+                                    @PathVariable("listId") Long listId,
+                                    @Valid @RequestBody TaskDTO taskDTO,
+                                    BindingResult result) throws ObjectFailedValidationException, ResourceDoesNotExistException {
+
+        String username = principal.getName();
+        if (result.hasErrors()) {
+            System.out.println(taskDTO.getTaskContent());
+            System.out.println(taskDTO.getFinished());
+            List<FieldError> fieldErrors = result.getFieldErrors();
+            throw new ObjectFailedValidationException(fieldErrors);
+        }
+
+        TodoList todoList = todoListService.getByIdAndUsername(listId, username);
+        if (todoList == null) {
+            throw new ResourceDoesNotExistException("List does not exists. Cannot add a task");
+        }
+
+        Task newTask = new Task();
+        newTask.setTaskContent(taskDTO.getTaskContent());
+        newTask.setFinished(taskDTO.getFinished());
+
+        todoList.addTask(newTask);
+        todoListService.save(todoList);
+
+        APIMessage apiMessage = new APIMessage(HttpStatus.CREATED);
+        apiMessage.addMessage("Task created successfully");
+        return apiMessage;
     }
 }
