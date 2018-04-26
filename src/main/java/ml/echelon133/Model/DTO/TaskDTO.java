@@ -11,7 +11,7 @@ public class TaskDTO {
     private String taskContent;
 
     @NotNull
-    private boolean isFinished;
+    private boolean finished;
 
     public TaskDTO() {}
 
@@ -24,10 +24,10 @@ public class TaskDTO {
     }
 
     public Boolean getFinished() {
-        return isFinished;
+        return finished;
     }
 
     public void setFinished(boolean finished) {
-        isFinished = finished;
+        this.finished = finished;
     }
 }
