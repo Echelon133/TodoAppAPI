@@ -66,6 +66,11 @@ public class TodoList {
         this.tasks = tasks;
     }
 
+    public void addTask(Task task) {
+        task.setTaskOwner(this);
+        this.tasks.add(task);
+    }
+
     public User getListOwner() {
         return listOwner;
     }
