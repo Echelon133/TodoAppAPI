@@ -65,4 +65,17 @@ public class TaskController {
         apiMessage.addMessage("Task created successfully");
         return apiMessage;
     }
+
+    @RequestMapping(value = "/api/todo-lists/{listId}/tasks/{taskId}", method = RequestMethod.GET)
+    public Task getSpecificTask(Principal principal,
+                                @PathVariable("listId") Long listId,
+                                @PathVariable("taskId") Long taskId) throws ResourceDoesNotExistException{
+        String username = principal.getName();
+        Task task = taskService.getTaskByListIdAndTaskIdAndUsername(listId, taskId, username);
+
+        if (task == null) {
+            throw new ResourceDoesNotExistException("Task does not exist");
+        }
+        return task;
+    }
 }
