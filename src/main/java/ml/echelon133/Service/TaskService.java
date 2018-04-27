@@ -24,6 +24,17 @@ public class TaskService implements ITaskService {
     }
 
     @Override
+    public Boolean delete(Task task) {
+        Boolean wasDeleted;
+        Long id = task.getId();
+
+        taskRepository.delete(task);
+        taskRepository.existsById(id);
+        wasDeleted = !taskRepository.existsById(id);
+        return wasDeleted;
+    }
+
+    @Override
     public Task save(Task task) {
         return taskRepository.save(task);
     }
