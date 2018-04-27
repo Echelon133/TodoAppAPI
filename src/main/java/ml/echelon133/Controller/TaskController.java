@@ -107,4 +107,29 @@ public class TaskController {
         apiMessage.addMessage("Task updated successfuly");
         return apiMessage;
     }
+
+    @RequestMapping(value = "/api/todo-lists/{listId}/tasks/{taskId}", method = RequestMethod.DELETE)
+    public APIMessage deleteTask(Principal principal,
+                                 @PathVariable("listId") Long listId,
+                                 @PathVariable("taskId") Long taskId) throws ResourceDoesNotExistException {
+        String username = principal.getName();
+        Boolean wasDeleted;
+        APIMessage apiMessage;
+
+        Task task = taskService.getTaskByListIdAndTaskIdAndUsername(listId, taskId, username);
+        if (task == null) {
+            throw new ResourceDoesNotExistException("Task does not exist");
+        }
+
+        wasDeleted = taskService.delete(task);
+
+        if (wasDeleted) {
+            apiMessage = new APIMessage(HttpStatus.OK);
+            apiMessage.addMessage("Task deleted successfully");
+        } else {
+            apiMessage = new APIMessage(HttpStatus.INTERNAL_SERVER_ERROR);
+            apiMessage.addMessage("Failed to delete task");
+        }
+        return apiMessage;
+    }
 }
