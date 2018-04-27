@@ -78,4 +78,33 @@ public class TaskController {
         }
         return task;
     }
+
+    @RequestMapping(value = "/api/todo-lists/{listId}/tasks/{taskId}", method = RequestMethod.PUT)
+    public APIMessage updateTask(Principal principal,
+                                 @PathVariable("listId") Long listId,
+                                 @PathVariable("taskId") Long taskId,
+                                 @Valid @RequestBody TaskDTO taskDTO,
+                                 BindingResult result) throws ResourceDoesNotExistException, ObjectFailedValidationException {
+
+        String username = principal.getName();
+
+        if (result.hasErrors()) {
+            List<FieldError> errors = result.getFieldErrors();
+            throw new ObjectFailedValidationException(errors);
+        }
+
+        Task task = taskService.getTaskByListIdAndTaskIdAndUsername(listId, taskId, username);
+
+        if (task == null) {
+            throw new ResourceDoesNotExistException("Task does not exist");
+        }
+
+        task.setTaskContent(taskDTO.getTaskContent());
+        task.setFinished(taskDTO.getFinished());
+        taskService.save(task);
+
+        APIMessage apiMessage = new APIMessage(HttpStatus.OK);
+        apiMessage.addMessage("Task updated successfuly");
+        return apiMessage;
+    }
 }
