@@ -19,7 +19,7 @@ public class TodoList {
     private String name;
 
     @OrderBy("id")
-    @OneToMany(mappedBy = "taskOwner", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "taskOwner", cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     private Set<Task> tasks;
 
     @ManyToOne
