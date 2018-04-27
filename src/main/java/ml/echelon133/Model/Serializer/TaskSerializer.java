@@ -14,7 +14,7 @@ public class TaskSerializer extends JsonSerializer<Task> {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("id", task.getId());
         jsonGenerator.writeStringField("dateCreated", task.getDateCreated().toString());
-        jsonGenerator.writeStringField("content", task.getTaskContent());
+        jsonGenerator.writeStringField("taskContent", task.getTaskContent());
         jsonGenerator.writeBooleanField("finished", task.getFinished());
         jsonGenerator.writeEndObject();
     }

@@ -15,7 +15,7 @@ public class Task {
     private Long id;
     private Date dateCreated;
     private String taskContent;
-    private Boolean isFinished;
+    private Boolean finished;
 
     @ManyToOne
     @JoinColumn(name="task_owner")
@@ -55,11 +55,11 @@ public class Task {
     }
 
     public Boolean getFinished() {
-        return isFinished;
+        return finished;
     }
 
     public void setFinished(Boolean finished) {
-        isFinished = finished;
+        this.finished = finished;
     }
 
     public TodoList getTaskOwner() {
