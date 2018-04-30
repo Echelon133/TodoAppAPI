@@ -35,11 +35,21 @@ in Redis under the username key. If the keys match then the verification is succ
 
 ## Documentation
 
-### Registration
+| Endpoint                                          | Method | Data appended to the request            |      Description                           |
+| ------------------------------------------------- | ------ | --------------------------------------- |      ------------                          |
+| /users/register                                   | POST   |  []                                     |      Register a new user                   |
+| /users/token                                      | POST   |  Header with basic auth set             | Get currently valid token                  |
+| /api/todo-lists                                   | GET    |  Header with bearer token               | Get all todo lists owned by user           |
+| /api/todo-lists                                   | POST   |  Header with bearer token and []        | Create a new list with specified name      |
+| /api/todo-lists/{listId}                          | GET    |  Header with bearer token               | Get a specific todo list with specified id |
+| /api/todo-lists/{listId}                          | PUT    |  Header with bearer token and []        | Rename the list with specified id          |
+| /api/todo-lists/{listId}                          | DELETE |  Header with bearer token               | Delete the list with specified id          |
+ 
 
-* **POST** /users/register - register a new user
+## JSON objects
 
-Send with request: 
+### User registration JSON
+
 ```Json
 {
     "username":"my_new_user",
@@ -48,45 +58,11 @@ Send with request:
 }
 ```
 
-### Token generation
-
-* **POST** /users/token - get currently valid token
-
-Send with request: header with basic auth data
-
-### General todo lists operations
-
-* **GET** /api/todo-lists - get all todo lists owned by the user
-
-Send with request: header with bearer token
-
-* **POST** /api/todo-lists - create a new todo list
-
-Send with request: header with bearer token and JSON as below:
+### List creation and renaming JSON
 
 ```Json
 {
-    "name" : "My new list name"
+    "name" : "My list list name"
 }
 ```
-
-### Specific todo list operations
-
-* **GET** /api/todo-lists/{listId} - get a list with specified id
-
-Send with request: header with bearer token
-
-* **PUT** /api/todo-lists/{listId} - rename a list with specified id
-
-Send with request: header with bearer token and JSON as below:
-
-```Json
-{
-    "name" : "New name for my already existing list"
-}
-```
-
-* **DELETE** /api/todo-lists/{listId} - remove a list with specified id
-
-Send with request: header with bearer token
 
