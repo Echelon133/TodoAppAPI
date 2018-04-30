@@ -48,19 +48,45 @@ Send with request:
 }
 ```
 
-Successful: returns **201 Created**
-
-Unsuccessful: returns **400 Bad Request** when JSON has errors or **409 Conflict** when username is already taken
-
-
 ### Token generation
 
 * **POST** /users/token - get currently valid token
 
-Send with request: username and password (as in http basic auth)
+Send with request: header with basic auth data
 
-Successful: returns **200 OK** with JWT token in the body of response
+### General todo lists operations
 
-Unsuccessful: returns **200 OK** without the token and prompts the user to provide valid credentials
+* **GET** /api/todo-lists - get all todo lists owned by the user
 
+Send with request: header with bearer token
+
+* **POST** /api/todo-lists - create a new todo list
+
+Send with request: header with bearer token and JSON as below:
+
+```Json
+{
+    "name" : "My new list name"
+}
+```
+
+### Specific todo list operations
+
+* **GET** /api/todo-lists/{listId} - get a list with specified id
+
+Send with request: header with bearer token
+
+* **PUT** /api/todo-lists/{listId} - rename a list with specified id
+
+Send with request: header with bearer token and JSON as below:
+
+```Json
+{
+    "name" : "New name for my already existing list"
+}
+```
+
+* **DELETE** /api/todo-lists/{listId} - remove a list with specified id
+
+Send with request: header with bearer token
 
