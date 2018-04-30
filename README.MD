@@ -49,6 +49,7 @@ Send with request:
 ```
 
 Successful: returns **201 Created**
+
 Unsuccessful: returns **400 Bad Request** when JSON has errors or **409 Conflict** when username is already taken
 
 
@@ -59,6 +60,7 @@ Unsuccessful: returns **400 Bad Request** when JSON has errors or **409 Conflict
 Send with request: username and password (as in http basic auth)
 
 Successful: returns **200 OK** with JWT token in the body of response
+
 Unsuccessful: returns **200 OK** without the token and prompts the user to provide valid credentials
 
 
