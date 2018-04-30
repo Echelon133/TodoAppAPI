@@ -35,11 +35,21 @@ in Redis under the username key. If the keys match then the verification is succ
 
 ## Documentation
 
-### Registration
+| Endpoint                                          | Method | Data appended to the request            |      Description                           |
+| ------------------------------------------------- | ------ | --------------------------------------- |      ------------                          |
+| /users/register                                   | POST   |  []                                     |      Register a new user                   |
+| /users/token                                      | POST   |  Header with basic auth set             | Get currently valid token                  |
+| /api/todo-lists                                   | GET    |  Header with bearer token               | Get all todo lists owned by user           |
+| /api/todo-lists                                   | POST   |  Header with bearer token and []        | Create a new list with specified name      |
+| /api/todo-lists/{listId}                          | GET    |  Header with bearer token               | Get a specific todo list with specified id |
+| /api/todo-lists/{listId}                          | PUT    |  Header with bearer token and []        | Rename the list with specified id          |
+| /api/todo-lists/{listId}                          | DELETE |  Header with bearer token               | Delete the list with specified id          |
+ 
 
-* **POST** /users/register - register a new user
+## JSON objects
 
-Send with request: 
+### User registration JSON
+
 ```Json
 {
     "username":"my_new_user",
@@ -48,17 +58,12 @@ Send with request:
 }
 ```
 
-Successful: returns **201 Created**
-Unsuccessful: returns **400 Bad Request** when JSON has errors or **409 Conflict** when username is already taken
+### List creation and renaming JSON
 
-
-### Token generation
-
-* **POST** /users/token - get currently valid token
-
-Send with request: username and password (as in http basic auth)
-
-Successful: returns **200 OK** with JWT token in the body of response
-Unsuccessful: returns **200 OK** without the token and prompts the user to provide valid credentials
+```Json
+{
+    "name" : "My list list name"
+}
+```
 
 
