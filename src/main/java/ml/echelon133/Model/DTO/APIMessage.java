@@ -5,9 +5,14 @@ import org.springframework.http.HttpStatus;
 import java.util.ArrayList;
 import java.util.List;
 
-public class APIMessage {
+public class APIMessage implements IAPIMessage {
     private HttpStatus httpStatus;
     private List<String> messages;
+
+    public APIMessage() {
+        setHttpStatus(HttpStatus.OK);
+        setMessages(new ArrayList<String>());
+    }
 
     public APIMessage(HttpStatus httpStatus) {
         setHttpStatus(httpStatus);
