@@ -3,7 +3,6 @@ package ml.echelon133.Controller;
 import ml.echelon133.Exception.RegistrationFailureException;
 import ml.echelon133.Exception.UsernameAlreadyTakenException;
 import ml.echelon133.Model.Authority;
-import ml.echelon133.Model.DTO.APIMessage;
 import ml.echelon133.Model.DTO.IAPIMessage;
 import ml.echelon133.Model.DTO.NewUserDTO;
 import ml.echelon133.Model.User;
