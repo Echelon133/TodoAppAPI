@@ -3,6 +3,7 @@ package ml.echelon133.Controller;
 import ml.echelon133.Exception.ObjectFailedValidationException;
 import ml.echelon133.Exception.ResourceDoesNotExistException;
 import ml.echelon133.Model.DTO.APIMessage;
+import ml.echelon133.Model.DTO.IAPIMessage;
 import ml.echelon133.Model.DTO.TodoListDTO;
 import ml.echelon133.Model.TodoList;
 import ml.echelon133.Model.User;
@@ -10,9 +11,11 @@ import ml.echelon133.Service.ITodoListService;
 import ml.echelon133.Service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.WebApplicationContext;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -22,10 +25,17 @@ import java.util.List;
 public class TodoListController {
 
     @Autowired
+    private WebApplicationContext context;
+
+    @Autowired
     private ITodoListService todoListService;
 
     @Autowired
     private IUserService userService;
+
+    public IAPIMessage getApiMessage() {
+        return (IAPIMessage)context.getBean("apiMessage");
+    }
 
     @RequestMapping(value="/api/todo-lists", method = RequestMethod.GET)
     public List<TodoList> getAllLists(Principal principal) {
@@ -35,9 +45,9 @@ public class TodoListController {
     }
 
     @RequestMapping(value="/api/todo-lists", method = RequestMethod.POST)
-    public APIMessage addNewList(Principal principal,
-                                 @Valid @RequestBody TodoListDTO todoListDTO,
-                                 BindingResult result) throws ObjectFailedValidationException {
+    public ResponseEntity<IAPIMessage> addNewList(Principal principal,
+                                                  @Valid @RequestBody TodoListDTO todoListDTO,
+                                                  BindingResult result) throws ObjectFailedValidationException {
         String username = principal.getName();
 
         if (result.hasErrors()) {
@@ -52,9 +62,10 @@ public class TodoListController {
         user.addTodoList(todoList);
         userService.save(user);
 
-        APIMessage apiMessage = new APIMessage(HttpStatus.CREATED);
+        IAPIMessage apiMessage = getApiMessage();
+        apiMessage.setHttpStatus(HttpStatus.CREATED);
         apiMessage.addMessage("Successful list creation");
-        return apiMessage;
+        return new ResponseEntity<>(apiMessage, apiMessage.getHttpStatus());
     }
 
     @RequestMapping(value="/api/todo-lists/{listId}", method = RequestMethod.GET)
@@ -69,7 +80,7 @@ public class TodoListController {
     }
 
     @RequestMapping(value="/api/todo-lists/{listId}", method = RequestMethod.PUT)
-    public APIMessage changeNameOfTodoList(Principal principal,
+    public ResponseEntity<IAPIMessage> changeNameOfTodoList(Principal principal,
                                          @PathVariable("listId") Long id,
                                          @Valid @RequestBody TodoListDTO todoListDTO,
                                          BindingResult result) throws ResourceDoesNotExistException, ObjectFailedValidationException {
@@ -89,16 +100,17 @@ public class TodoListController {
             todoList.setName(newName);
             todoListService.save(todoList);
         }
-        APIMessage apiMessage = new APIMessage(HttpStatus.OK);
+
+        IAPIMessage apiMessage = getApiMessage();
+        apiMessage.setHttpStatus(HttpStatus.OK);
         apiMessage.addMessage("List name changed successfully");
-        return apiMessage;
+        return new ResponseEntity<IAPIMessage>(apiMessage, apiMessage.getHttpStatus());
     }
 
     @RequestMapping(value="/api/todo-lists/{listId}", method = RequestMethod.DELETE)
-    public APIMessage deleteTodoList(Principal principal, @PathVariable("listId") Long id) throws ResourceDoesNotExistException {
+    public ResponseEntity<IAPIMessage> deleteTodoList(Principal principal, @PathVariable("listId") Long id) throws ResourceDoesNotExistException {
         String username = principal.getName();
         Boolean wasDeleted;
-        APIMessage apiMessage;
 
         TodoList todoList = todoListService.getByIdAndUsername(id, username);
         if (todoList == null) {
@@ -107,15 +119,17 @@ public class TodoListController {
         }
         wasDeleted = todoListService.delete(todoList);
 
+        IAPIMessage apiMessage = getApiMessage();
+
         if (wasDeleted) {
-            apiMessage = new APIMessage(HttpStatus.OK);
+            apiMessage.setHttpStatus(HttpStatus.OK);
             apiMessage.addMessage("List deleted successfully");
         } else {
             // delete is called only if the resource exists and user has rights to delete it
             // if resource was not deleted, it means that something went wrong and it is not user fault
-            apiMessage = new APIMessage(HttpStatus.INTERNAL_SERVER_ERROR);
+            apiMessage.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             apiMessage.addMessage("Failed to delete list");
         }
-        return apiMessage;
+        return new ResponseEntity<IAPIMessage>(apiMessage, apiMessage.getHttpStatus());
     }
 }

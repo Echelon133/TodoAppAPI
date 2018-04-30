@@ -3,6 +3,7 @@ package ml.echelon133.Controller;
 import ml.echelon133.Exception.ObjectFailedValidationException;
 import ml.echelon133.Exception.ResourceDoesNotExistException;
 import ml.echelon133.Model.DTO.APIMessage;
+import ml.echelon133.Model.DTO.IAPIMessage;
 import ml.echelon133.Model.DTO.TaskDTO;
 import ml.echelon133.Model.Task;
 import ml.echelon133.Model.TodoList;
@@ -10,9 +11,11 @@ import ml.echelon133.Service.ITaskService;
 import ml.echelon133.Service.ITodoListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.WebApplicationContext;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -28,6 +31,13 @@ public class TaskController {
     @Autowired
     private ITaskService taskService;
 
+    @Autowired
+    private WebApplicationContext context;
+
+    public IAPIMessage getApiMessage() {
+        return (IAPIMessage)context.getBean("apiMessage");
+    }
+
     @RequestMapping(value = "/api/todo-lists/{listId}/tasks", method = RequestMethod.GET)
     public Set<Task> getAllTasksFromSpecificList(Principal principal, @PathVariable("listId") Long listId) {
         String username = principal.getName();
@@ -36,10 +46,10 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/api/todo-lists/{listId}/tasks", method = RequestMethod.POST)
-    public APIMessage addTaskToList(Principal principal,
-                                    @PathVariable("listId") Long listId,
-                                    @Valid @RequestBody TaskDTO taskDTO,
-                                    BindingResult result) throws ObjectFailedValidationException, ResourceDoesNotExistException {
+    public ResponseEntity<IAPIMessage> addTaskToList(Principal principal,
+                                                     @PathVariable("listId") Long listId,
+                                                     @Valid @RequestBody TaskDTO taskDTO,
+                                                     BindingResult result) throws ObjectFailedValidationException, ResourceDoesNotExistException {
 
         String username = principal.getName();
         if (result.hasErrors()) {
@@ -61,9 +71,10 @@ public class TaskController {
         todoList.addTask(newTask);
         todoListService.save(todoList);
 
-        APIMessage apiMessage = new APIMessage(HttpStatus.CREATED);
+        IAPIMessage apiMessage = getApiMessage();
+        apiMessage.setHttpStatus(HttpStatus.CREATED);
         apiMessage.addMessage("Task created successfully");
-        return apiMessage;
+        return new ResponseEntity<>(apiMessage, apiMessage.getHttpStatus());
     }
 
     @RequestMapping(value = "/api/todo-lists/{listId}/tasks/{taskId}", method = RequestMethod.GET)
@@ -80,7 +91,7 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/api/todo-lists/{listId}/tasks/{taskId}", method = RequestMethod.PUT)
-    public APIMessage updateTask(Principal principal,
+    public ResponseEntity<IAPIMessage> updateTask(Principal principal,
                                  @PathVariable("listId") Long listId,
                                  @PathVariable("taskId") Long taskId,
                                  @Valid @RequestBody TaskDTO taskDTO,
@@ -103,18 +114,18 @@ public class TaskController {
         task.setFinished(taskDTO.getFinished());
         taskService.save(task);
 
-        APIMessage apiMessage = new APIMessage(HttpStatus.OK);
+        IAPIMessage apiMessage = getApiMessage();
+        apiMessage.setHttpStatus(HttpStatus.OK);
         apiMessage.addMessage("Task updated successfuly");
-        return apiMessage;
+        return new ResponseEntity<>(apiMessage, apiMessage.getHttpStatus());
     }
 
     @RequestMapping(value = "/api/todo-lists/{listId}/tasks/{taskId}", method = RequestMethod.DELETE)
-    public APIMessage deleteTask(Principal principal,
+    public ResponseEntity<IAPIMessage> deleteTask(Principal principal,
                                  @PathVariable("listId") Long listId,
                                  @PathVariable("taskId") Long taskId) throws ResourceDoesNotExistException {
         String username = principal.getName();
         Boolean wasDeleted;
-        APIMessage apiMessage;
 
         Task task = taskService.getTaskByListIdAndTaskIdAndUsername(listId, taskId, username);
         if (task == null) {
@@ -123,13 +134,14 @@ public class TaskController {
 
         wasDeleted = taskService.delete(task);
 
+        IAPIMessage apiMessage = getApiMessage();
         if (wasDeleted) {
-            apiMessage = new APIMessage(HttpStatus.OK);
+            apiMessage.setHttpStatus(HttpStatus.OK);
             apiMessage.addMessage("Task deleted successfully");
         } else {
-            apiMessage = new APIMessage(HttpStatus.INTERNAL_SERVER_ERROR);
+            apiMessage.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             apiMessage.addMessage("Failed to delete task");
         }
-        return apiMessage;
+        return new ResponseEntity<>(apiMessage, apiMessage.getHttpStatus());
     }
 }

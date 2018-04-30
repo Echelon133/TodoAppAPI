@@ -4,12 +4,14 @@ import ml.echelon133.Exception.RegistrationFailureException;
 import ml.echelon133.Exception.UsernameAlreadyTakenException;
 import ml.echelon133.Model.Authority;
 import ml.echelon133.Model.DTO.APIMessage;
+import ml.echelon133.Model.DTO.IAPIMessage;
 import ml.echelon133.Model.DTO.NewUserDTO;
 import ml.echelon133.Model.User;
 import ml.echelon133.Service.IAuthorityService;
 import ml.echelon133.Service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.WebApplicationContext;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -26,15 +29,21 @@ import java.util.List;
 public class RegistrationController {
 
     @Autowired
+    private WebApplicationContext context;
+
+    @Autowired
     private IUserService userService;
 
     @Autowired
     private IAuthorityService authorityService;
 
+    public IAPIMessage getApiMessage() {
+        return (IAPIMessage)context.getBean("apiMessage");
+    }
+
     @RequestMapping(value="/users/register", method= RequestMethod.POST)
-    public APIMessage registerUser(@Valid @RequestBody NewUserDTO newUserDTO, BindingResult result)
+    public ResponseEntity<IAPIMessage> registerUser(@Valid @RequestBody NewUserDTO newUserDTO, BindingResult result)
             throws UsernameAlreadyTakenException, RegistrationFailureException {
-        APIMessage apiMessage;
 
         if (result.hasErrors()) {
             ObjectError oError = result.getGlobalError();
@@ -69,9 +78,11 @@ public class RegistrationController {
         user.addAuthority(authority);
 
         userService.save(user);
-        apiMessage = new APIMessage(HttpStatus.CREATED);
+
+        IAPIMessage apiMessage = getApiMessage();
+        apiMessage.setHttpStatus(HttpStatus.CREATED);
         apiMessage.addMessage("Registration successful");
-        return apiMessage;
+        return new ResponseEntity<>(apiMessage, apiMessage.getHttpStatus());
     }
 
 }
