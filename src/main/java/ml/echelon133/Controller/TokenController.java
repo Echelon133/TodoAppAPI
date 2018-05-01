@@ -11,8 +11,12 @@ import java.security.Principal;
 @RestController
 public class TokenController {
 
-    @Autowired
     private ITokenService tokenService;
+
+    @Autowired
+    public TokenController(ITokenService tokenService) {
+        this.tokenService = tokenService;
+    }
 
     @RequestMapping(value="/users/token", method= RequestMethod.POST)
     public String getToken(Principal principal) {

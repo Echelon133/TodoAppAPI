@@ -23,14 +23,16 @@ import java.util.List;
 @RestController
 public class TodoListController {
 
-    @Autowired
     private WebApplicationContext context;
-
-    @Autowired
     private ITodoListService todoListService;
+    private IUserService userService;
 
     @Autowired
-    private IUserService userService;
+    public TodoListController(WebApplicationContext context, ITodoListService todoListService, IUserService userService) {
+        this.context = context;
+        this.todoListService = todoListService;
+        this.userService = userService;
+    }
 
     public IAPIMessage getApiMessage() {
         return (IAPIMessage)context.getBean("apiMessage");

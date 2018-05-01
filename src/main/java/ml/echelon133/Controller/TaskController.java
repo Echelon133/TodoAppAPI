@@ -24,14 +24,16 @@ import java.util.Set;
 @RestController
 public class TaskController {
 
-    @Autowired
     private ITodoListService todoListService;
-
-    @Autowired
     private ITaskService taskService;
+    private WebApplicationContext context;
 
     @Autowired
-    private WebApplicationContext context;
+    public TaskController(ITodoListService todoListService, ITaskService taskService, WebApplicationContext context) {
+        this.todoListService = todoListService;
+        this.taskService = taskService;
+        this.context = context;
+    }
 
     public IAPIMessage getApiMessage() {
         return (IAPIMessage)context.getBean("apiMessage");

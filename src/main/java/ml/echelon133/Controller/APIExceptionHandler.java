@@ -19,8 +19,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class APIExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @Autowired
     private WebApplicationContext context;
+
+    @Autowired
+    public APIExceptionHandler(WebApplicationContext context) {
+        this.context = context;
+    }
 
     public IAPIMessage getApiMessage() {
         return (IAPIMessage)context.getBean("apiMessage");

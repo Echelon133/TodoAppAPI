@@ -27,14 +27,16 @@ import java.util.List;
 @RestController
 public class RegistrationController {
 
-    @Autowired
     private WebApplicationContext context;
-
-    @Autowired
     private IUserService userService;
+    private IAuthorityService authorityService;
 
     @Autowired
-    private IAuthorityService authorityService;
+    public RegistrationController(WebApplicationContext context, IUserService userService, IAuthorityService authorityService) {
+        this.context = context;
+        this.userService = userService;
+        this.authorityService = authorityService;
+    }
 
     public IAPIMessage getApiMessage() {
         return (IAPIMessage)context.getBean("apiMessage");
