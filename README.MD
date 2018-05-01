@@ -80,20 +80,3 @@ in Redis under the username key. If the keys match then the verification is succ
     "finished" : false
 }
 ```
-
-### List JSON
-
-```Json
-{
-    "name" : "My list name"
-}
-```
-
-### Task JSON
-
-```Json
-{
-    "taskContent" : "Put your task content here",
-    "finished" : false
-}
-```
