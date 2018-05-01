@@ -8,8 +8,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthorityService implements IAuthorityService {
 
-    @Autowired
     private AuthorityRepository authorityRepository;
+
+    @Autowired
+    public AuthorityService(AuthorityRepository authorityRepository) {
+        this.authorityRepository = authorityRepository;
+    }
 
     @Override
     public Authority getAuthorityByAuthority(String authorityName) {

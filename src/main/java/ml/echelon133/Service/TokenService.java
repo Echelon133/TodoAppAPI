@@ -15,11 +15,14 @@ import java.util.Date;
 @Service
 public class TokenService implements ITokenService {
 
-    @Autowired
     private ITokenRepository tokenRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    public TokenService(ITokenRepository tokenRepository, UserRepository userRepository) {
+        this.tokenRepository = tokenRepository;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public String getTokenOfUser(String username) {

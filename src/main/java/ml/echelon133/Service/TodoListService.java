@@ -10,8 +10,12 @@ import java.util.List;
 @Service
 public class TodoListService implements ITodoListService {
 
-    @Autowired
     private TodoListRepository todoListRepository;
+
+    @Autowired
+    public TodoListService(TodoListRepository todoListRepository) {
+        this.todoListRepository = todoListRepository;
+    }
 
     @Override
     public List<TodoList> getAllByListOwner_Username(String username) {

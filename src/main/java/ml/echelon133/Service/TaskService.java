@@ -10,8 +10,12 @@ import java.util.Set;
 @Service
 public class TaskService implements ITaskService {
 
-    @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    public TaskService(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
 
     @Override
     public Set<Task> getAllTasksByTodoListIdAndUsername(Long todoListId, String username) {
