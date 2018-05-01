@@ -4,6 +4,9 @@ import ml.echelon133.Security.JWTAuthenticationFilter;
 import ml.echelon133.Security.JWTAuthenticationManager;
 import ml.echelon133.Security.JWTAuthenticationProvider;
 import ml.echelon133.Service.CustomUserDetailsService;
+import ml.echelon133.Service.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -77,6 +80,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Configuration
     public static class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 
+        private ApplicationContext context;
+
+        @Autowired
+        public void context(ApplicationContext context) {
+            this.context = context;
+        }
+
         @Bean
         public RequestMatcher basicRequestMatcher() {
             return new AntPathRequestMatcher("/users/**");
@@ -84,7 +94,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Bean
         public UserDetailsService userDetailsService() {
-            return new CustomUserDetailsService();
+            IUserService userService = context.getBean(IUserService.class);
+            return new CustomUserDetailsService(userService);
         }
 
         @Override
