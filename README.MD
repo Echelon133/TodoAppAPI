@@ -34,20 +34,11 @@ in Redis under the username key. If the keys match then the verification is succ
 
 
 ## Documentation
-
 | Endpoint                                          | Method | Data appended to the request            |      Description                           |
 | ------------------------------------------------- | ------ | --------------------------------------- |      ------------                          |
 | /users/register                                   | POST   |  [User registration JSON](https://github.com/Echelon133/TodoAppAPI/blob/master/README.MD#user-registration-json)                                     |      Register a new user                   |
 | /users/token                                      | POST   |  Header with basic auth set             | Get currently valid token                  |
 | /api/todo-lists                                   | GET    |  Header with bearer token               | Get all todo lists owned by user           |
-| /api/todo-lists                                   | POST   |  Header with bearer token and []        | Create a new list with specified name      |
-| /api/todo-lists/{listId}                          | GET    |  Header with bearer token               | Get a specific todo list with specified listId |
-| /api/todo-lists/{listId}                          | PUT    |  Header with bearer token and []        | Rename the list with specified listId          |
-| /api/todo-lists/{listId}                          | DELETE |  Header with bearer token               | Delete the list with specified listId          |
-| /api/todo-lists/{listId}/tasks                    | GET    |  Header with bearer token               | Get all tasks from a list with specified listId|
-| /api/todo-lists/{listId}/tasks                    | POST   |  Header with bearer token and []        | Create a new task that belongs to a list with specified listId|
-| /api/todo-lists/{listId}/tasks/{taskId}           | GET    |  Header with bearer token               | Get a task with taskId that belongs to a list with listId |
-| /api/todo-lists/{listId}/tasks/{taskId}           | PUT    |  Header with bearer token and []        | Modify a task with specified taskId that belongs to a list with listId |
 | /api/todo-lists                                   | POST   |  Header with bearer token and [List JSON](https://github.com/Echelon133/TodoAppAPI/blob/master/README.MD#list-json)        | Create a new list with specified name      |
 | /api/todo-lists/{listId}                          | GET    |  Header with bearer token               | Get a specific todo list with specified listId |
 | /api/todo-lists/{listId}                          | PUT    |  Header with bearer token and [List JSON](https://github.com/Echelon133/TodoAppAPI/blob/master/README.MD#list-json)        | Rename the list with specified listId          |
@@ -57,6 +48,8 @@ in Redis under the username key. If the keys match then the verification is succ
 | /api/todo-lists/{listId}/tasks/{taskId}           | GET    |  Header with bearer token               | Get a task with taskId that belongs to a list with listId |
 | /api/todo-lists/{listId}/tasks/{taskId}           | PUT    |  Header with bearer token and [Task JSON](https://github.com/Echelon133/TodoAppAPI/blob/master/README.MD#task-json)        | Modify a task with specified taskId that belongs to a list with listId |
 | /api/todo-lists/{listId}/tasks/{taskId}           | DELETE |  Header with bearer token               | Delete a task with specified taskId that belongs to a list with listId |
+
+
 
 
 ## JSON objects
