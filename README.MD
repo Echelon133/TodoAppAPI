@@ -85,7 +85,6 @@ in Redis under the username key. If the keys match then the verification is succ
 {
     "taskContent" : "Put your task content here",
     "finished" : false
-=======
 }
 ```
 
