@@ -48,8 +48,6 @@ public class RegistrationControllerTest {
     @InjectMocks
     private RegistrationController registrationController;
 
-    private JacksonTester<IAPIMessage> jsonApiMessage;
-
     private JacksonTester<NewUserDTO> jsonNewUser;
 
     @Before
