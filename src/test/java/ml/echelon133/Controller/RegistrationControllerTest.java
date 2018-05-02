@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ml.echelon133.Model.DTO.APIMessage;
 import ml.echelon133.Model.DTO.IAPIMessage;
 import ml.echelon133.Model.DTO.NewUserDTO;
+import ml.echelon133.Model.User;
 import ml.echelon133.Repository.AuthorityRepository;
 import ml.echelon133.Repository.UserRepository;
 import ml.echelon133.Service.AuthorityService;
@@ -19,6 +20,7 @@ import org.springframework.boot.test.json.JsonContent;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -33,18 +35,15 @@ public class RegistrationControllerTest {
     private MockMvc mvc;
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private AuthorityRepository authorityRepository;
-
-    @Mock
     private WebApplicationContext context;
 
-    @InjectMocks
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @Mock
     private UserService userService;
 
-    @InjectMocks
+    @Mock
     private AuthorityService authorityService;
 
     @InjectMocks
@@ -106,5 +105,27 @@ public class RegistrationControllerTest {
         // Then returned status is 400 and response contains text message with error
         assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(response.getContentAsString()).contains("username length must be between 6 and 25");
+    }
+
+    @Test
+    public void userCannotBeRegisteredWhenUsernameIsAlreadyTaken() throws Exception {
+        // Prepare NewUserDTO
+        NewUserDTO newUserDTO = new NewUserDTO("my_username", "valid_password", "valid_password");
+        JsonContent<NewUserDTO> newUserJson = jsonNewUser.write(newUserDTO);
+
+        // Given username return user object that is not null
+        given(userService.getUserByUsername("my_username")).willReturn(new User("my_username", "test_password"));
+
+        // When sent JSON with username that is already taken
+        MockHttpServletResponse response = mvc.perform(
+                post("/users/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newUserJson.getJson())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then returned status is 409 and response contains text message with error
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.CONFLICT.value());
+        assertThat(response.getContentAsString()).contains("User with that username already exists");
     }
 }
