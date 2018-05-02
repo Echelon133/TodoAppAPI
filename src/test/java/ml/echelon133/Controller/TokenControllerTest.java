@@ -55,4 +55,23 @@ public class TokenControllerTest {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentAsString()).contains(token);
     }
+
+    @Test
+    public void getTokenGeneratedOnTheSpot() throws Exception {
+        String token = "new.token.content";
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+        given(tokenService.getTokenOfUser("test_user")).willReturn(null);
+        given(tokenService.generateTokenForUser("test_user")).willReturn(token);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                post("/users/token").principal(principal))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentAsString()).contains(token);
+    }
 }
