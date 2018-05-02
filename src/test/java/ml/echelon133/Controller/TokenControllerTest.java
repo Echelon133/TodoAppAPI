@@ -45,8 +45,7 @@ public class TokenControllerTest {
         given(principal.getName()).willReturn("test_user");
         given(tokenService.getTokenOfUser("test_user")).willReturn(token);
 
-
-        // When (tests omit filters, so there is a post request without any authorization headers)
+        // When
         MockHttpServletResponse response = mvc.perform(
                 post("/users/token").principal(principal))
                 .andReturn().getResponse();
