@@ -1,7 +1,6 @@
 package ml.echelon133.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ml.echelon133.Exception.RegistrationFailureException;
 import ml.echelon133.Model.DTO.APIMessage;
 import ml.echelon133.Model.DTO.IAPIMessage;
 import ml.echelon133.Model.DTO.NewUserDTO;
@@ -67,7 +66,7 @@ public class RegistrationControllerTest {
 
     @Test
     public void userCannotBeRegisteredWhenPasswordsNotEqual() throws Exception {
-        // Prepare NewUser json in which passwords do not match
+        // Prepare NewUserDTO json in which passwords do not match
         NewUserDTO newUserDTO = new NewUserDTO("test_user", "first_password", "first_password1");
         JsonContent<NewUserDTO> newUserJson = jsonNewUser.write(newUserDTO);
 
@@ -82,11 +81,32 @@ public class RegistrationControllerTest {
                 post("/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newUserJson.getJson())
-                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
         // Then returned status is 400 and response contains text message with error
         assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(response.getContentAsString()).contains("Passwords do not match");
+    }
+
+    @Test
+    public void userCannotBeRegisteredWhenUsernameLengthIsInvalid() throws Exception {
+        // Prepare NewUserDTO json in which username is too short
+        NewUserDTO newUserDTO = new NewUserDTO("tt", "valid_password", "valid_password");
+        JsonContent<NewUserDTO> newUserJson = jsonNewUser.write(newUserDTO);
+
+        given(context.getBean("apiMessage")).willReturn(new APIMessage());
+
+        // When sent JSON has username that is too short
+        MockHttpServletResponse response = mvc.perform(
+                post("/users/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newUserJson.getJson())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then returned status is 400 and response contains text message with error
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.getContentAsString()).contains("username length must be between 6 and 25");
     }
 }
