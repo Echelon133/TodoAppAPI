@@ -61,6 +61,12 @@ public class RegistrationControllerTest {
     public void setup() {
         JacksonTester.initFields(this, new ObjectMapper());
 
+        // APIExceptionHandler uses APIMessage objects in which it returns the response
+        // In the real application APIMessage objects are request scoped and taken from WebApplicationContext
+        // Here WebApplicationContext getBean call is fixed to return APIMessage because request scope
+        // is not needed since APIMessage is called only once
+        given(context.getBean("apiMessage")).willReturn(new APIMessage());
+
         mvc = MockMvcBuilders.standaloneSetup(registrationController).setControllerAdvice(exceptionHandler).build();
     }
 
@@ -69,12 +75,6 @@ public class RegistrationControllerTest {
         // Prepare NewUserDTO json in which passwords do not match
         NewUserDTO newUserDTO = new NewUserDTO("test_user", "first_password", "first_password1");
         JsonContent<NewUserDTO> newUserJson = jsonNewUser.write(newUserDTO);
-
-        // APIExceptionHandler uses APIMessage objects in which it returns the response
-        // In the real application APIMessage objects are request scoped and taken from WebApplicationContext
-        // Here WebApplicationContext getBean call is fixed to return APIMessage because request scope
-        // is not needed since APIMessage is called only once
-        given(context.getBean("apiMessage")).willReturn(new APIMessage());
 
         // When sent JSON has passwords that do not match
         MockHttpServletResponse response = mvc.perform(
@@ -94,8 +94,6 @@ public class RegistrationControllerTest {
         // Prepare NewUserDTO json in which username is too short
         NewUserDTO newUserDTO = new NewUserDTO("tt", "valid_password", "valid_password");
         JsonContent<NewUserDTO> newUserJson = jsonNewUser.write(newUserDTO);
-
-        given(context.getBean("apiMessage")).willReturn(new APIMessage());
 
         // When sent JSON has username that is too short
         MockHttpServletResponse response = mvc.perform(
