@@ -139,4 +139,30 @@ public class TodoListControllerTest {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(response.getContentAsString()).contains("name must not be null");
     }
+
+    @Test
+    public void todoListCannotBeSavedWhenNameLengthIsInvalid() throws Exception {
+        // Prepare TodoListDTO
+        TodoListDTO todoListDTO = new TodoListDTO();
+        todoListDTO.setName("asd");
+
+        // Prepare TodoListDTO json
+        JsonContent<TodoListDTO> todoListDTOJsonContent = jsonTodoListDTO.write(todoListDTO);
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                post("/api/todo-lists")
+                        .principal(principal)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(todoListDTOJsonContent.getJson())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.getContentAsString()).contains("name length must be between 4 and 60");
+    }
 }
