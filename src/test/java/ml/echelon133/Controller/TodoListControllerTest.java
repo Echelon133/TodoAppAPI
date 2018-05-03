@@ -349,4 +349,70 @@ public class TodoListControllerTest {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentAsString()).contains("List name changed successfully");
     }
+
+    @Test
+    public void todoListCannotBeDeletedWhenListDoesNotExist() throws Exception {
+        // Given
+        given(principal.getName()).willReturn("test_user");
+        given(todoListService.getByIdAndUsername(1L, "test_user")).willReturn(null);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                delete("/api/todo-lists/1")
+                        .principal(principal)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(response.getContentAsString()).contains("List not found");
+    }
+
+    @Test
+    public void todoListCanBeDeletedWhenListExists() throws Exception {
+        // Prepare TodoList
+        TodoList todoList = new TodoList();
+        todoList.setId(1L);
+        todoList.setName("TodoList name");
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+        given(todoListService.getByIdAndUsername(1L, "test_user")).willReturn(todoList);
+        given(todoListService.delete(todoList)).willReturn(true);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                delete("/api/todo-lists/1")
+                        .principal(principal)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentAsString()).contains("List deleted successfully");
+    }
+
+    @Test
+    public void todoListCannotBeDeletedWhenServiceFails() throws Exception {
+        // Prepare TodoList
+        TodoList todoList = new TodoList();
+        todoList.setId(1L);
+        todoList.setName("TodoList name");
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+        given(todoListService.getByIdAndUsername(1L, "test_user")).willReturn(todoList);
+        given(todoListService.delete(todoList)).willReturn(false);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                delete("/api/todo-lists/1")
+                        .principal(principal)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.getContentAsString()).contains("Failed to delete list");
+    }
 }
