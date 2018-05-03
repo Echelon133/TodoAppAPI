@@ -54,8 +54,6 @@ public class TaskController {
 
         String username = principal.getName();
         if (result.hasErrors()) {
-            System.out.println(taskDTO.getTaskContent());
-            System.out.println(taskDTO.getFinished());
             List<FieldError> fieldErrors = result.getFieldErrors();
             throw new ObjectFailedValidationException(fieldErrors);
         }
