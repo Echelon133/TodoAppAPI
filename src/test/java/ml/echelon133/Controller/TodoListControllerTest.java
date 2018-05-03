@@ -29,8 +29,7 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TodoListControllerTest {
@@ -238,5 +237,116 @@ public class TodoListControllerTest {
         // Then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentAsString()).isEqualTo(todoListJsonContent.getJson());
+    }
+
+    @Test
+    public void todoListNameCannotBeChangedToNull() throws Exception {
+        // Prepare TodoListDTO
+        TodoListDTO todoListDTO = new TodoListDTO();
+        todoListDTO.setName(null);
+
+        // Prepare TodoListDTO json
+        JsonContent<TodoListDTO> todoListDTOJsonContent = jsonTodoListDTO.write(todoListDTO);
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                put("/api/todo-lists/1")
+                        .principal(principal)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(todoListDTOJsonContent.getJson())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.getContentAsString()).contains("name must not be null");
+    }
+
+    @Test
+    public void todoListNameCannotBeChangedWhenNewNameLengthIsInvalid() throws Exception {
+        // Prepare TodoListDTO
+        TodoListDTO todoListDTO = new TodoListDTO();
+        todoListDTO.setName("New");
+
+        // Prepare TodoListDTO json
+        JsonContent<TodoListDTO> todoListDTOJsonContent = jsonTodoListDTO.write(todoListDTO);
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                put("/api/todo-lists/1")
+                        .principal(principal)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(todoListDTOJsonContent.getJson())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.getContentAsString()).contains("name length must be between 4 and 60");
+    }
+
+    @Test
+    public void todoListNameCannotBeChangedWhenTodoListIsNotFound() throws Exception {
+        // Prepare TodoListDTO
+        TodoListDTO todoListDTO = new TodoListDTO();
+        todoListDTO.setName("Valid name");
+
+        // Prepare TodoListDTO json
+        JsonContent<TodoListDTO> todoListDTOJsonContent = jsonTodoListDTO.write(todoListDTO);
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+        given(todoListService.getByIdAndUsername(1L, "test_user")).willReturn(null);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                put("/api/todo-lists/1")
+                        .principal(principal)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(todoListDTOJsonContent.getJson())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(response.getContentAsString()).contains("List not found");
+    }
+
+    @Test
+    public void todoListNameCanBeChangedWhenNewNameIsValid() throws Exception {
+        // Prepare TodoListDTO
+        TodoListDTO todoListDTO = new TodoListDTO();
+        todoListDTO.setName("Valid name");
+
+        // Prepare TodoList
+        TodoList todoList = new TodoList();
+        todoList.setId(1L);
+        todoList.setName("TodoList name");
+
+        // Prepare TodoListDTO json
+        JsonContent<TodoListDTO> todoListDTOJsonContent = jsonTodoListDTO.write(todoListDTO);
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+        given(todoListService.getByIdAndUsername(1L, "test_user")).willReturn(todoList);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                put("/api/todo-lists/1")
+                        .principal(principal)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(todoListDTOJsonContent.getJson())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentAsString()).contains("List name changed successfully");
     }
 }
