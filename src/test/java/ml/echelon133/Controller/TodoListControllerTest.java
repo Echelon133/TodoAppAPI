@@ -57,6 +57,8 @@ public class TodoListControllerTest {
 
     private JacksonTester<List<TodoList>> jsonTodoLists;
 
+    private JacksonTester<TodoList> jsonTodoList;
+
     private JacksonTester<TodoListDTO> jsonTodoListDTO;
 
     @Before
@@ -192,5 +194,49 @@ public class TodoListControllerTest {
         // Then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.getContentAsString()).contains("Successful list creation");
+    }
+
+    @Test
+    public void getSpecificTodoListReturnsNotFoundWhenListDoesNotExist() throws Exception {
+        // Given
+        given(principal.getName()).willReturn("test_user");
+        given(todoListService.getByIdAndUsername(1L, "test_user")).willReturn(null);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                get("/api/todo-lists/1")
+                        .principal(principal)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(response.getContentAsString()).contains("List not found");
+    }
+
+    @Test
+    public void getSpecificTodoListReturnsTodoListIfItExists() throws Exception {
+        // Prepare TodoList
+        TodoList todoList = new TodoList();
+        todoList.setId(1L);
+        todoList.setName("TodoList name");
+
+        // Prepare expected json
+        JsonContent<TodoList> todoListJsonContent = jsonTodoList.write(todoList);
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+        given(todoListService.getByIdAndUsername(1L, "test_user")).willReturn(todoList);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                get("/api/todo-lists/1")
+                        .principal(principal)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentAsString()).isEqualTo(todoListJsonContent.getJson());
     }
 }
