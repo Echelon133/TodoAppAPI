@@ -115,7 +115,7 @@ public class TaskController {
 
         IAPIMessage apiMessage = getApiMessage();
         apiMessage.setHttpStatus(HttpStatus.OK);
-        apiMessage.addMessage("Task updated successfuly");
+        apiMessage.addMessage("Task updated successfully");
         return new ResponseEntity<>(apiMessage, apiMessage.getHttpStatus());
     }
 
