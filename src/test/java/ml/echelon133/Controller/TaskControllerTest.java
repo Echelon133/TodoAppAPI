@@ -53,6 +53,8 @@ public class TaskControllerTest {
     @InjectMocks
     private TaskController taskController;
 
+    private JacksonTester<Task> jsonTask;
+
     private JacksonTester<Set<Task>> jsonTasks;
 
     private JacksonTester<TaskDTO> jsonTaskDTO;
@@ -228,5 +230,47 @@ public class TaskControllerTest {
         assertThat(response.getContentAsString()).contains("Task created successfully");
     }
 
+    @Test
+    public void specificTaskCannotBeDisplayedWhenItDoesNotExist() throws Exception {
+        // Given
+        given(principal.getName()).willReturn("test_user");
+        given(taskService.getTaskByListIdAndTaskIdAndUsername(1L, 1L, "test_user")).willReturn(null);
 
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                get("/api/todo-lists/1/tasks/1")
+                        .principal(principal)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(response.getContentAsString()).contains("Task does not exist");
+    }
+
+    @Test
+    public void specificTaskCanBeDisplayedWhenItExists() throws Exception {
+        // Prepare Task
+        Task task = new Task();
+        task.setId(1L);
+        task.setTaskContent("Task content");
+
+        // Prepare expected Task Json
+        JsonContent<Task> taskJsonContent = jsonTask.write(task);
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+        given(taskService.getTaskByListIdAndTaskIdAndUsername(1L, 1L, "test_user")).willReturn(task);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                get("/api/todo-lists/1/tasks/1")
+                        .principal(principal)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentAsString()).isEqualTo(taskJsonContent.getJson());
+    }
 }
