@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ml.echelon133.Model.DTO.APIMessage;
 import ml.echelon133.Model.DTO.TodoListDTO;
 import ml.echelon133.Model.TodoList;
+import ml.echelon133.Model.User;
 import ml.echelon133.Service.TodoListService;
 import ml.echelon133.Service.UserService;
 import org.junit.Before;
@@ -164,5 +165,32 @@ public class TodoListControllerTest {
         // Then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(response.getContentAsString()).contains("name length must be between 4 and 60");
+    }
+
+    @Test
+    public void todoListCanBeSavedWhenNameIsValid() throws Exception {
+        // Prepare TodoListDTO
+        TodoListDTO todoListDTO = new TodoListDTO();
+        todoListDTO.setName("Valid name of a list");
+
+        // Prepare TodoListDTO json
+        JsonContent<TodoListDTO> todoListDTOJsonContent = jsonTodoListDTO.write(todoListDTO);
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+        given(userService.getUserByUsername("test_user")).willReturn(new User("test_user", "test_password"));
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                post("/api/todo-lists")
+                        .principal(principal)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(todoListDTOJsonContent.getJson())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.getContentAsString()).contains("Successful list creation");
     }
 }
