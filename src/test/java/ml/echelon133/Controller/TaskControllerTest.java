@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ml.echelon133.Model.DTO.APIMessage;
 import ml.echelon133.Model.DTO.TaskDTO;
 import ml.echelon133.Model.Task;
+import ml.echelon133.Model.TodoList;
 import ml.echelon133.Service.TaskService;
 import ml.echelon133.Service.TodoListService;
 import org.junit.Before;
@@ -115,4 +116,117 @@ public class TaskControllerTest {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentAsString()).isEqualTo(tasksJsonContent.getJson());
     }
+
+    @Test
+    public void taskCannotBeAddedToTodoListWhenTaskContentIsNull() throws Exception {
+        // Prepare TaskDTO
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setTaskContent(null);
+        taskDTO.setFinished(false);
+
+        // Prepare TaskDTO json
+        JsonContent<TaskDTO> taskDTOJsonContent = jsonTaskDTO.write(taskDTO);
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                post("/api/todo-lists/1/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(taskDTOJsonContent.getJson())
+                        .accept(MediaType.APPLICATION_JSON).principal(principal))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.getContentAsString()).contains("taskContent must not be null");
+    }
+
+    @Test
+    public void taskCannotBeAddedToTodoListWhenTaskContentLengthIsInvalid() throws Exception {
+        // Prepare TaskDTO
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setTaskContent("aa");
+        taskDTO.setFinished(false);
+
+        // Prepare TaskDTO json
+        JsonContent<TaskDTO> taskDTOJsonContent = jsonTaskDTO.write(taskDTO);
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                post("/api/todo-lists/1/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(taskDTOJsonContent.getJson())
+                        .accept(MediaType.APPLICATION_JSON).principal(principal))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.getContentAsString()).contains("taskContent length must be between 5 and 100");
+    }
+
+    @Test
+    public void taskCannotBeAddedToTodoListWhenTodoListDoesNotExist() throws Exception {
+        // Prepare TaskDTO
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setTaskContent("valid task content");
+        taskDTO.setFinished(false);
+
+        // Prepare TaskDTO json
+        JsonContent<TaskDTO> taskDTOJsonContent = jsonTaskDTO.write(taskDTO);
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+        given(todoListService.getByIdAndUsername(1L, "test_user")).willReturn(null);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                post("/api/todo-lists/1/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(taskDTOJsonContent.getJson())
+                        .accept(MediaType.APPLICATION_JSON).principal(principal))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(response.getContentAsString()).contains("List does not exists. Cannot add a task");
+    }
+
+    @Test
+    public void taskCanBeAddedToTodoListWhenItsValidAndTodoListExists() throws Exception {
+        // Prepare TaskDTO
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setTaskContent("valid task content");
+        taskDTO.setFinished(false);
+
+        // Prepare TaskDTO json
+        JsonContent<TaskDTO> taskDTOJsonContent = jsonTaskDTO.write(taskDTO);
+
+        // Prepare TodoList
+        TodoList todoList = new TodoList();
+        todoList.setId(1L);
+        todoList.setName("Example TodoList");
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+        given(todoListService.getByIdAndUsername(1L, "test_user")).willReturn(todoList);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                post("/api/todo-lists/1/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(taskDTOJsonContent.getJson())
+                        .accept(MediaType.APPLICATION_JSON).principal(principal))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.getContentAsString()).contains("Task created successfully");
+    }
+
+
 }
