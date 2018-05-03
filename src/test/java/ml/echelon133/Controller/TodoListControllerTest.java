@@ -2,6 +2,7 @@ package ml.echelon133.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ml.echelon133.Model.DTO.APIMessage;
+import ml.echelon133.Model.DTO.TodoListDTO;
 import ml.echelon133.Model.TodoList;
 import ml.echelon133.Service.TodoListService;
 import ml.echelon133.Service.UserService;
@@ -28,6 +29,7 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TodoListControllerTest {
@@ -53,6 +55,8 @@ public class TodoListControllerTest {
     private APIExceptionHandler exceptionHandler;
 
     private JacksonTester<List<TodoList>> jsonTodoLists;
+
+    private JacksonTester<TodoListDTO> jsonTodoListDTO;
 
     @Before
     public void setup() {
@@ -108,5 +112,31 @@ public class TodoListControllerTest {
         // Then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentAsString()).isEqualTo(todoListsJsonContent.getJson());
+    }
+
+    @Test
+    public void todoListCannotBeSavedWhenNameIsNull() throws Exception {
+        // Prepare TodoListDTO
+        TodoListDTO todoListDTO = new TodoListDTO();
+        todoListDTO.setName(null);
+
+        // Prepare TodoListDTO json
+        JsonContent<TodoListDTO> todoListDTOJsonContent = jsonTodoListDTO.write(todoListDTO);
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                post("/api/todo-lists")
+                        .principal(principal)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(todoListDTOJsonContent.getJson())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.getContentAsString()).contains("name must not be null");
     }
 }
