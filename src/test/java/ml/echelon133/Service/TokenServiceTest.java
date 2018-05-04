@@ -51,4 +51,23 @@ public class TokenServiceTest {
         assertThat(decodedUsername).isEqualTo(testUsername);
         assertThat(decodedDate).isEqualToIgnoringSeconds(date);
     }
+
+    @Test
+    public void extractUsernameFromTokenExtractsUsernameFromValidToken() throws Exception {
+        String testUsername = "test_user";
+        String testSecret = "aaaaaaaaaaaaaaaa";
+        Date date = new Date();
+        StringBuilder tokenBuilder = new StringBuilder("Bearer ");
+
+        // Prepare test token
+        Algorithm algorithm = Algorithm.HMAC512(testSecret);
+        String token = JWT.create().withClaim("date", date).withClaim("username", testUsername).sign(algorithm);
+        tokenBuilder.append(token);
+
+        // When
+        String extractedUsername = tokenService.extractUsernameFromToken(tokenBuilder.toString());
+
+        // Then
+        assertThat(extractedUsername).isEqualTo(testUsername);
+    }
 }
