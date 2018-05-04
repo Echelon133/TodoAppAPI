@@ -22,9 +22,6 @@ public class CustomUserDetailsServiceTest {
     @InjectMocks
     private CustomUserDetailsService userDetailsService;
 
-    @Before
-    public void setup() {}
-
     @Test(expected = UsernameNotFoundException.class)
     public void loadUserByUsernameThrowsExceptionWhenUserIsNull() throws Exception {
         // Given
