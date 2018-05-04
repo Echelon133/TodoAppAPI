@@ -387,4 +387,70 @@ public class TaskControllerTest {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentAsString()).contains("Task updated successfully");
     }
+
+    @Test
+    public void taskCannotBeDeletedWhenTaskDoesNotExist() throws Exception {
+        // Given
+        given(principal.getName()).willReturn("test_user");
+        given(taskService.getTaskByListIdAndTaskIdAndUsername(1L, 1L, "test_user")).willReturn(null);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                delete("/api/todo-lists/1/tasks/1")
+                        .principal(principal)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(response.getContentAsString()).contains("Task does not exist");
+    }
+
+    @Test
+    public void taskCanBeDeletedWhenTaskExists() throws Exception {
+        // Prepare Task
+        Task task = new Task();
+        task.setId(1L);
+        task.setTaskContent("Task content");
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+        given(taskService.getTaskByListIdAndTaskIdAndUsername(1L, 1L, "test_user")).willReturn(task);
+        given(taskService.delete(task)).willReturn(true);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                delete("/api/todo-lists/1/tasks/1")
+                        .principal(principal)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentAsString()).contains("Task deleted successfully");
+    }
+
+    @Test
+    public void taskCannotBeDeletedWhenServiceFails() throws Exception {
+        // Prepare Task
+        Task task = new Task();
+        task.setId(1L);
+        task.setTaskContent("Task content");
+
+        // Given
+        given(principal.getName()).willReturn("test_user");
+        given(taskService.getTaskByListIdAndTaskIdAndUsername(1L, 1L, "test_user")).willReturn(task);
+        given(taskService.delete(task)).willReturn(false);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                delete("/api/todo-lists/1/tasks/1")
+                        .principal(principal)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.getContentAsString()).contains("Failed to delete task");
+    }
 }
