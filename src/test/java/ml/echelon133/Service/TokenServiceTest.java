@@ -5,17 +5,20 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import ml.echelon133.Repository.TokenRepository;
 import ml.echelon133.Repository.UserRepository;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.stubbing.OngoingStubbing;
 
 import java.util.Date;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TokenServiceTest {
@@ -69,5 +72,53 @@ public class TokenServiceTest {
 
         // Then
         assertThat(extractedUsername).isEqualTo(testUsername);
+    }
+
+    @Test
+    public void isValidTokenValidatesCorrectToken() throws Exception {
+        String testUsername = "test_user";
+        String testSecret = "aaaaaaaaaaaaaaaa";
+        StringBuilder tokenBuilder = new StringBuilder("Bearer ");
+
+        // Prepare test token
+        Algorithm algorithm = Algorithm.HMAC512(testSecret);
+        String token = JWT.create().withClaim("date", new Date()).withClaim("username", testUsername).sign(algorithm);
+        tokenBuilder.append(token);
+
+        // Given
+        given(tokenRepository.getTokenOfUser(testUsername)).willReturn(token);
+
+        // When
+        Boolean isValid = tokenService.isValidToken(tokenBuilder.toString());
+
+        // Then
+        assertThat(isValid).isTrue();
+    }
+
+    @Test
+    public void isValidTokenDoesNotValidateIncorrectToken() throws Exception {
+        String testUsername = "test_user";
+        Algorithm algorithm;
+
+        // Prepare valid token
+        String validSecret = "aaaaaaaaaaaaaaaa";
+        algorithm = Algorithm.HMAC512(validSecret);
+        String validToken = JWT.create().withClaim("date", new Date()).withClaim("username", testUsername).sign(algorithm);
+
+        // Prepare 'invalid' token
+        String invalidSecret = "bbbbbbbbbbbbbbbb";
+        algorithm = Algorithm.HMAC512(invalidSecret);
+        String invalidToken = JWT.create().withClaim("date", new Date()).withClaim("username", testUsername).sign(algorithm);
+        StringBuilder tokenBuilder = new StringBuilder("Bearer ");
+        tokenBuilder.append(invalidToken);
+
+        // Given
+        given(tokenRepository.getTokenOfUser(testUsername)).willReturn(validToken);
+
+        // When
+        Boolean isValid = tokenService.isValidToken(tokenBuilder.toString());
+
+        // Then
+        assertThat(isValid).isFalse();
     }
 }
