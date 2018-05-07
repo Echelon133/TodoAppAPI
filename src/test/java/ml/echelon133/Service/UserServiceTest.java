@@ -62,7 +62,6 @@ public class UserServiceTest {
         user.setId(1L);
 
         // Given
-        given(passwordEncoder.encode(password)).willCallRealMethod();
         given(userRepository.save(user)).willReturn(user);
 
         // When
