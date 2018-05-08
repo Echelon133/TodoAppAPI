@@ -29,8 +29,8 @@ There are two authentication systems in this application:
 
 JWT library has token claims verification built-in, but I did not use it because I wanted to try out Redis in a real application.
 
-In this app tokens are stored in Redis and they are verified by comparison between the token sent by user and the token that is stored 
-in Redis under the username key. If the keys match then the verification is successful.
+In this app tokens are stored in Redis and they are verified by comparing the token sent by the user and the token that is stored 
+in Redis under the username key. If the tokens match then the verification is successful.
 
 
 ## Documentation
