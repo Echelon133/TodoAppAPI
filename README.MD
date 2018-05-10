@@ -29,8 +29,8 @@ There are two authentication systems in this application:
 
 JWT library has token claims verification built-in, but I did not use it because I wanted to try out Redis in a real application.
 
-In this app tokens are stored in Redis and they are verified by comparison between the token sent by user and the token that is stored 
-in Redis under the username key. If the keys match then the verification is successful.
+In this app tokens are stored in Redis and they are verified by comparing the token sent by the user and the token that is stored 
+in Redis under the username key. If the tokens match then the verification is successful.
 
 
 ## Documentation
@@ -80,3 +80,48 @@ in Redis under the username key. If the keys match then the verification is succ
     "finished" : false
 }
 ```
+## Screens
+### Token Generation
+![GenerateToken](https://github.com/Echelon133/TodoAppAPI/blob/master/screens/1GenerateToken.png)
+
+### List Creation
+![CreateList](https://github.com/Echelon133/TodoAppAPI/blob/master/screens/2CreateList.png)
+
+### All Lists 
+![GetLists](https://github.com/Echelon133/TodoAppAPI/blob/master/screens/3GetLists.png)
+
+### Specific List
+![GetSpecificList](https://github.com/Echelon133/TodoAppAPI/blob/master/screens/4GetSpecificList.png)
+
+### All Tasks In a List
+![GetAllTasks](https://github.com/Echelon133/TodoAppAPI/blob/master/screens/5GetAllTasks.png)
+
+### Task Creation
+![CreateTask](https://github.com/Echelon133/TodoAppAPI/blob/master/screens/6CreateTask.png)
+
+### Specific List with Tasks
+![GetNotEmptyList](https://github.com/Echelon133/TodoAppAPI/blob/master/screens/7GetNotEmptyList.png)
+
+### Specific Task
+![GetSpecificTask](https://github.com/Echelon133/TodoAppAPI/blob/master/screens/8GetSpecificTask.png)
+
+### Task Name Updating
+![UpdateTaskName](https://github.com/Echelon133/TodoAppAPI/blob/master/screens/9UpdateTaskName.png)
+
+### Task Deletion
+![DeleteTask](https://github.com/Echelon133/TodoAppAPI/blob/master/screens/10DeleteTask.png)
+
+### Specific List (Updated)
+![GetUpdatedList](https://github.com/Echelon133/TodoAppAPI/blob/master/screens/11GetUpdatedList.png)
+
+### List Name Change
+![ChangeListName](https://github.com/Echelon133/TodoAppAPI/blob/master/screens/12ChangeListName.png)
+
+### All Lists (Updated)
+![GetAllLists](https://github.com/Echelon133/TodoAppAPI/blob/master/screens/13GetAllLists.png)
+
+### List Deletion
+![DeleteList](https://github.com/Echelon133/TodoAppAPI/blob/master/screens/14DeleteList.png)
+
+### All Lists (Updated again)
+![GetEmptyLists](https://github.com/Echelon133/TodoAppAPI/blob/master/screens/15GetEmptyLists.png)
