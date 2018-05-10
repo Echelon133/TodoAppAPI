@@ -1,7 +1,7 @@
 package ml.echelon133;
 
-import ml.echelon133.Model.DTO.APIMessage;
-import ml.echelon133.Model.DTO.IAPIMessage;
+import ml.echelon133.model.dto.APIMessage;
+import ml.echelon133.model.dto.IAPIMessage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
