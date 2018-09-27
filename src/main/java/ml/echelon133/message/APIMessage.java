@@ -1,4 +1,4 @@
-package ml.echelon133.model.dto;
+package ml.echelon133.message;
 
 import org.springframework.http.HttpStatus;
 
