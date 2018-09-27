@@ -1,6 +1,6 @@
-package ml.echelon133.model.dto;
+package ml.echelon133.user;
 
-import ml.echelon133.model.validator.PasswordsMatch;
+import ml.echelon133.user.validator.PasswordsMatch;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;

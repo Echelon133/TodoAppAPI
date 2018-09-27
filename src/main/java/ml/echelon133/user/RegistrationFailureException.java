@@ -1,4 +1,4 @@
-package ml.echelon133.exception;
+package ml.echelon133.user;
 
 import java.util.List;
 

@@ -1,6 +1,8 @@
-package ml.echelon133.model;
+package ml.echelon133.user;
 
+import ml.echelon133.list.TodoList;
 import ml.echelon133.security.SecretGenerator;
+import ml.echelon133.authority.Authority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;

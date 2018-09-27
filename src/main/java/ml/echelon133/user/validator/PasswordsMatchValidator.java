@@ -1,6 +1,6 @@
-package ml.echelon133.model.validator;
+package ml.echelon133.user.validator;
 
-import ml.echelon133.model.dto.NewUserDTO;
+import ml.echelon133.user.NewUserDTO;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

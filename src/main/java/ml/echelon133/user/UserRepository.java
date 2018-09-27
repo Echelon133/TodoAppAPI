@@ -1,6 +1,6 @@
-package ml.echelon133.repository;
+package ml.echelon133.user;
 
-import ml.echelon133.model.User;
+import ml.echelon133.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,4 +1,4 @@
-package ml.echelon133.model.validator;
+package ml.echelon133.user.validator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

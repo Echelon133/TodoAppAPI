@@ -1,13 +1,8 @@
-package ml.echelon133.controller;
+package ml.echelon133.user;
 
-import ml.echelon133.exception.RegistrationFailureException;
-import ml.echelon133.exception.UsernameAlreadyTakenException;
-import ml.echelon133.model.Authority;
-import ml.echelon133.model.dto.IAPIMessage;
-import ml.echelon133.model.dto.NewUserDTO;
-import ml.echelon133.model.User;
-import ml.echelon133.service.IAuthorityService;
-import ml.echelon133.service.IUserService;
+import ml.echelon133.message.IAPIMessage;
+import ml.echelon133.authority.Authority;
+import ml.echelon133.authority.IAuthorityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

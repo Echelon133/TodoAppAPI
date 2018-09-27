@@ -1,6 +1,5 @@
-package ml.echelon133.service;
+package ml.echelon133.user;
 
-import ml.echelon133.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
