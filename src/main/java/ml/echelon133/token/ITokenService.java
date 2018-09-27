@@ -1,4 +1,4 @@
-package ml.echelon133.service;
+package ml.echelon133.token;
 
 public interface ITokenService {
     String getTokenOfUser(String username);

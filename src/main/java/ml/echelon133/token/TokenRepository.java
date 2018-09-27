@@ -1,5 +1,6 @@
-package ml.echelon133.repository;
+package ml.echelon133.token;
 
+import ml.echelon133.token.ITokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundValueOperations;
 import org.springframework.data.redis.core.RedisTemplate;
