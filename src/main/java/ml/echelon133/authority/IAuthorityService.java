@@ -1,6 +1,4 @@
-package ml.echelon133.user;
-
-import ml.echelon133.user.Authority;
+package ml.echelon133.authority;
 
 public interface IAuthorityService {
     Authority getAuthorityByAuthority(String authorityName);

@@ -1,4 +1,4 @@
-package ml.echelon133.user;
+package ml.echelon133.authority;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
