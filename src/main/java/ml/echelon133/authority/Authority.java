@@ -1,4 +1,4 @@
-package ml.echelon133.model;
+package ml.echelon133.user;
 
 import org.springframework.security.core.GrantedAuthority;
 

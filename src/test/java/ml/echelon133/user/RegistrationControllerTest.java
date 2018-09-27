@@ -1,12 +1,14 @@
 package ml.echelon133.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ml.echelon133.model.Authority;
-import ml.echelon133.model.dto.APIMessage;
-import ml.echelon133.model.dto.NewUserDTO;
-import ml.echelon133.model.User;
-import ml.echelon133.service.AuthorityService;
-import ml.echelon133.service.UserService;
+import ml.echelon133.exception.APIExceptionHandler;
+import ml.echelon133.user.Authority;
+import ml.echelon133.message.APIMessage;
+import ml.echelon133.user.NewUserDTO;
+import ml.echelon133.user.RegistrationController;
+import ml.echelon133.user.User;
+import ml.echelon133.user.AuthorityService;
+import ml.echelon133.user.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

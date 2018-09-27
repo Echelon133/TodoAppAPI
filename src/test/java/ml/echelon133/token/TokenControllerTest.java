@@ -1,6 +1,7 @@
 package ml.echelon133.controller;
 
-import ml.echelon133.service.TokenService;
+import ml.echelon133.token.TokenService;
+import ml.echelon133.token.TokenController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

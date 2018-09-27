@@ -1,7 +1,8 @@
 package ml.echelon133.service;
 
-import ml.echelon133.model.User;
-import ml.echelon133.repository.UserRepository;
+import ml.echelon133.user.User;
+import ml.echelon133.user.UserRepository;
+import ml.echelon133.user.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,12 +1,14 @@
 package ml.echelon133.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ml.echelon133.model.dto.APIMessage;
-import ml.echelon133.model.dto.TaskDTO;
-import ml.echelon133.model.Task;
-import ml.echelon133.model.TodoList;
-import ml.echelon133.service.TaskService;
-import ml.echelon133.service.TodoListService;
+import ml.echelon133.exception.APIExceptionHandler;
+import ml.echelon133.message.APIMessage;
+import ml.echelon133.task.TaskController;
+import ml.echelon133.task.TaskDTO;
+import ml.echelon133.task.Task;
+import ml.echelon133.list.TodoList;
+import ml.echelon133.task.TaskService;
+import ml.echelon133.list.TodoListService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

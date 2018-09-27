@@ -1,6 +1,8 @@
 package ml.echelon133.service;
 
-import ml.echelon133.model.User;
+import ml.echelon133.user.CustomUserDetailsService;
+import ml.echelon133.user.User;
+import ml.echelon133.user.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
