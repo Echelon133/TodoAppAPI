@@ -1,10 +1,8 @@
-package ml.echelon133.controller;
+package ml.echelon133.exception;
 
-import ml.echelon133.exception.ObjectFailedValidationException;
-import ml.echelon133.exception.RegistrationFailureException;
-import ml.echelon133.exception.ResourceDoesNotExistException;
-import ml.echelon133.exception.UsernameAlreadyTakenException;
-import ml.echelon133.model.dto.IAPIMessage;
+import ml.echelon133.user.RegistrationFailureException;
+import ml.echelon133.user.UsernameAlreadyTakenException;
+import ml.echelon133.message.IAPIMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
