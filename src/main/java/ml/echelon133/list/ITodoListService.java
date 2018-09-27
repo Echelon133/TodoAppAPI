@@ -1,6 +1,6 @@
-package ml.echelon133.service;
+package ml.echelon133.list;
 
-import ml.echelon133.model.TodoList;
+import ml.echelon133.list.TodoList;
 
 import java.util.List;
 

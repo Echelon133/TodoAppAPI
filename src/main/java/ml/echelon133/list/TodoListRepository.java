@@ -1,6 +1,6 @@
-package ml.echelon133.repository;
+package ml.echelon133.list;
 
-import ml.echelon133.model.TodoList;
+import ml.echelon133.list.TodoList;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

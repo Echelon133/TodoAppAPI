@@ -1,4 +1,4 @@
-package ml.echelon133.model.dto;
+package ml.echelon133.list;
 
 import org.hibernate.validator.constraints.Length;
 

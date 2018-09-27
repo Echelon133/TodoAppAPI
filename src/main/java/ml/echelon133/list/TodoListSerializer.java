@@ -1,10 +1,9 @@
-package ml.echelon133.model.serializer;
+package ml.echelon133.list;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import ml.echelon133.model.Task;
-import ml.echelon133.model.TodoList;
+import ml.echelon133.task.Task;
 
 import java.io.IOException;
 import java.util.Set;

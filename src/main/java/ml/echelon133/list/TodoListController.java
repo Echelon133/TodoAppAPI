@@ -1,13 +1,10 @@
-package ml.echelon133.controller;
+package ml.echelon133.list;
 
 import ml.echelon133.exception.ObjectFailedValidationException;
 import ml.echelon133.exception.ResourceDoesNotExistException;
-import ml.echelon133.model.dto.IAPIMessage;
-import ml.echelon133.model.dto.TodoListDTO;
-import ml.echelon133.model.TodoList;
-import ml.echelon133.model.User;
-import ml.echelon133.service.ITodoListService;
-import ml.echelon133.service.IUserService;
+import ml.echelon133.message.IAPIMessage;
+import ml.echelon133.user.User;
+import ml.echelon133.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
