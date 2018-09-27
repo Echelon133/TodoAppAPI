@@ -1,6 +1,4 @@
-package ml.echelon133.service;
-
-import ml.echelon133.model.Task;
+package ml.echelon133.task;
 
 import java.util.Set;
 

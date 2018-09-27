@@ -1,7 +1,5 @@
-package ml.echelon133.service;
+package ml.echelon133.task;
 
-import ml.echelon133.model.Task;
-import ml.echelon133.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

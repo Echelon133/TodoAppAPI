@@ -1,7 +1,7 @@
-package ml.echelon133.model;
+package ml.echelon133.task;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import ml.echelon133.model.serializer.TaskSerializer;
+import ml.echelon133.list.TodoList;
 
 import javax.persistence.*;
 import java.util.Date;
