@@ -1,4 +1,4 @@
-package ml.echelon133.service;
+package ml.echelon133.token;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

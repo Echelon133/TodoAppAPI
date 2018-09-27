@@ -1,4 +1,4 @@
-package ml.echelon133.service;
+package ml.echelon133.user;
 
 import ml.echelon133.user.User;
 import ml.echelon133.user.UserRepository;

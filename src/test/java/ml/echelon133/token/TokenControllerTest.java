@@ -1,4 +1,4 @@
-package ml.echelon133.controller;
+package ml.echelon133.token;
 
 import ml.echelon133.token.TokenService;
 import ml.echelon133.token.TokenController;

@@ -1,4 +1,4 @@
-package ml.echelon133.controller;
+package ml.echelon133.list;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ml.echelon133.exception.APIExceptionHandler;
